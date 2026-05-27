@@ -33,7 +33,7 @@ try {
 let memoryProducts = [...sampleProducts].map(p => {
   let category = 'Casual';
   let gender = 'Unisex';
-  
+
   const nameLower = p.name.toLowerCase();
   if (nameLower.includes('t-shirt') || nameLower.includes('shirt') || nameLower.includes('polo') || nameLower.includes('crop top')) {
     category = 'Tops';
