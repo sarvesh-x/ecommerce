@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fashion House - Premium Clothing</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <div class="logo">
+        <a href="#home">Fashion House</a>
+      </div>
+
+      <nav class="nav-primary">
+        <div class="nav-item">
+          <a href="#collection">New Arrivals</a>
+        </div>
+
+        <div class="nav-item">
+          <a href="#collection" class="nav-link-with-menu">Men</a>
+          <div class="nav-submenu">
+            <a href="#collection" class="submenu-link">T-Shirts</a>
+            <a href="#collection" class="submenu-link">Jeans</a>
+            <a href="#collection" class="submenu-link">Hoodies</a>
+            <div class="nav-subitem-group">
+              <span class="submenu-label">Collections</span>
+              <a href="#collection" class="submenu-sublink">Summer 2026</a>
+              <a href="#collection" class="submenu-sublink">Winter 2026</a>
+              <a href="#collection" class="submenu-sublink">Classic</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="#collection" class="nav-link-with-menu">Women</a>
+          <div class="nav-submenu">
+            <a href="#collection" class="submenu-link">Dresses</a>
+            <a href="#collection" class="submenu-link">Tops</a>
+            <a href="#collection" class="submenu-link">Bottoms</a>
+            <div class="nav-subitem-group">
+              <span class="submenu-label">Categories</span>
+              <a href="#collection" class="submenu-sublink">Casual</a>
+              <a href="#collection" class="submenu-sublink">Formal</a>
+              <a href="#collection" class="submenu-sublink">Activewear</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="#collection" class="nav-link-with-menu">Accessories</a>
+          <div class="nav-submenu">
+            <a href="#collection" class="submenu-link">Bags</a>
+            <a href="#collection" class="submenu-link">Belts</a>
+            <a href="#collection" class="submenu-link">Hats</a>
+            <div class="nav-subitem-group">
+              <span class="submenu-label">Materials</span>
+              <a href="#collection" class="submenu-sublink">Leather</a>
+              <a href="#collection" class="submenu-sublink">Canvas</a>
+              <a href="#collection" class="submenu-sublink">Wool</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-item">
+          <a href="#shop">Sale</a>
+        </div>
+      </nav>
+
+      <div class="nav-secondary">
+        <button class="search-btn" id="searchBtn" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M9.5 9.5L14 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a href="#shop" class="cart-btn" aria-label="Shopping Cart">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 2H3L4 12H13L14 2H3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="5" cy="13" r="0.5" fill="currentColor"/>
+            <circle cx="12" cy="13" r="0.5" fill="currentColor"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div id="searchModal" class="search-modal" hidden>
+      <div class="search-content">
+        <input type="text" id="searchInput" placeholder="Search clothing..." />
+        <button class="close-search" id="closeSearch">✕</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1>Premium Essentials</h1>
+        <p>Curated clothing for the modern wardrobe.</p>
+        <a href="#collection" class="scroll-link">Explore</a>
+      </div>
+    </section>
+
+    <!-- Product Collection Carousel -->
+    <section id="collection" class="collection-section">
+      <div class="collection-header">
+        <h2>Our Premium Collection</h2>
+        <div class="carousel-controls">
+          <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="carousel-btn next" id="carouselNext" aria-label="Next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="carousel-container">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Cards will be generated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Order Section -->
+    <section id="shop" class="order-section">
+      <div class="order-container">
+        <div class="order-column">
+          <h2>Your Order</h2>
+          <div id="selectedProduct" class="selected-product-display">
+            Select a product to begin.
+          </div>
+        </div>
+
+        <div class="order-column">
+          <form id="orderForm" class="order-form">
+            <input type="hidden" id="productId" name="productId" />
+
+            <div class="form-group">
+              <label for="customerName">Full Name</label>
+              <input
+                type="text"
+                id="customerName"
+                name="customerName"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="shippingAddress">Address</label>
+              <input
+                type="text"
+                id="shippingAddress"
+                name="shippingAddress"
+                placeholder="Shipping address"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                min="1"
+                value="1"
+                required
+              />
+            </div>
+
+            <button type="submit" class="submit-btn" id="orderButton" disabled>
+              Complete Order
+            </button>
+            <div id="orderMessage" class="order-feedback"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Fashion House © 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
