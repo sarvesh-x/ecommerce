@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fashion House - Premium Clothing</title>
+  <title>FASHION HOUSE</title>
+  <!-- Google Fonts: Outfit (For Headings) and Inter (For UI/Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
+  <!-- Global Toast Notification -->
+  <div id="toastNotification" class="toast-notification" hidden></div>
+
+  <!-- Header -->
   <header class="site-header">
     <div class="header-container">
       <div class="logo">
@@ -14,182 +28,514 @@
       </div>
 
       <nav class="nav-primary">
-        <div class="nav-item">
-          <a href="#collection">New Arrivals</a>
-        </div>
-
-        <div class="nav-item">
-          <a href="#collection" class="nav-link-with-menu">Men</a>
-          <div class="nav-submenu">
-            <a href="#collection" class="submenu-link">T-Shirts</a>
-            <a href="#collection" class="submenu-link">Jeans</a>
-            <a href="#collection" class="submenu-link">Hoodies</a>
-            <div class="nav-subitem-group">
-              <span class="submenu-label">Collections</span>
-              <a href="#collection" class="submenu-sublink">Summer 2026</a>
-              <a href="#collection" class="submenu-sublink">Winter 2026</a>
-              <a href="#collection" class="submenu-sublink">Classic</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-item">
-          <a href="#collection" class="nav-link-with-menu">Women</a>
-          <div class="nav-submenu">
-            <a href="#collection" class="submenu-link">Dresses</a>
-            <a href="#collection" class="submenu-link">Tops</a>
-            <a href="#collection" class="submenu-link">Bottoms</a>
-            <div class="nav-subitem-group">
-              <span class="submenu-label">Categories</span>
-              <a href="#collection" class="submenu-sublink">Casual</a>
-              <a href="#collection" class="submenu-sublink">Formal</a>
-              <a href="#collection" class="submenu-sublink">Activewear</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-item">
-          <a href="#collection" class="nav-link-with-menu">Accessories</a>
-          <div class="nav-submenu">
-            <a href="#collection" class="submenu-link">Bags</a>
-            <a href="#collection" class="submenu-link">Belts</a>
-            <a href="#collection" class="submenu-link">Hats</a>
-            <div class="nav-subitem-group">
-              <span class="submenu-label">Materials</span>
-              <a href="#collection" class="submenu-sublink">Leather</a>
-              <a href="#collection" class="submenu-sublink">Canvas</a>
-              <a href="#collection" class="submenu-sublink">Wool</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="nav-item">
-          <a href="#shop">Sale</a>
-        </div>
+        <a href="#home" class="nav-link active" data-page="home">Home</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="all">Shop All</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="Men">Men</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="Women">Women</a>
+        <a href="#offers" class="nav-link" data-page="offers">Offers</a>
+        <a href="#about" class="nav-link" data-page="about">About</a>
+        <a href="#contact" class="nav-link" data-page="contact">Contact</a>
       </nav>
 
       <div class="nav-secondary">
-        <button class="search-btn" id="searchBtn" aria-label="Search">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/>
-            <path d="M9.5 9.5L14 14" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <!-- Dark Mode Toggle -->
+        <button id="darkModeToggle" class="icon-btn" aria-label="Toggle Dark Mode">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
+            class="sun-icon">
+            <circle cx="12" cy="12" r="5"></circle>
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42">
+            </path>
+          </svg>
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"
+            class="moon-icon" style="display:none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
-        <a href="#shop" class="cart-btn" aria-label="Shopping Cart">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M2 2H3L4 12H13L14 2H3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="5" cy="13" r="0.5" fill="currentColor"/>
-            <circle cx="12" cy="13" r="0.5" fill="currentColor"/>
+
+        <!-- Search Button -->
+        <button id="searchBtn" class="icon-btn" aria-label="Search Catalog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-        </a>
+        </button>
+
+        <!-- User Profile Button -->
+        <button id="profileBtn" class="icon-btn" aria-label="User Profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="userStatusBadge" class="status-badge" hidden></span>
+        </button>
+
+        <!-- Cart Button -->
+        <button id="cartBtn" class="cart-btn" aria-label="Shopping Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
       </div>
     </div>
 
+    <!-- Dropdown Search Modal -->
     <div id="searchModal" class="search-modal" hidden>
       <div class="search-content">
-        <input type="text" id="searchInput" placeholder="Search clothing..." />
-        <button class="close-search" id="closeSearch">✕</button>
+        <input type="text" id="searchInput" placeholder="Search premium apparel..." />
+        <button class="close-btn" id="closeSearch">✕</button>
       </div>
     </div>
   </header>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-content">
-        <h1>Premium Essentials</h1>
-        <p>Curated clothing for the modern wardrobe.</p>
-        <a href="#collection" class="scroll-link">Explore</a>
-      </div>
-    </section>
+  <!-- Auth Modal (Login / Signup) -->
+  <div id="authModal" class="modal-overlay" hidden>
+    <div class="modal-container auth-modal-container">
+      <button class="close-modal-btn" id="closeAuthModal">✕</button>
 
-    <!-- Product Collection Carousel -->
-    <section id="collection" class="collection-section">
-      <div class="collection-header">
-        <h2>Our Premium Collection</h2>
-        <div class="carousel-controls">
-          <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <button class="carousel-btn next" id="carouselNext" aria-label="Next">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="carousel-container">
-        <div class="carousel-track" id="carouselTrack">
-          <!-- Cards will be generated by JavaScript -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Order Section -->
-    <section id="shop" class="order-section">
-      <div class="order-container">
-        <div class="order-column">
-          <h2>Your Order</h2>
-          <div id="selectedProduct" class="selected-product-display">
-            Select a product to begin.
+      <!-- Login Card -->
+      <div id="loginCard">
+        <h2>Welcome Back</h2>
+        <p class="modal-subtitle">Sign in to your Fashion House account.</p>
+        <form id="loginForm" class="modal-form">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" placeholder="name@example.com" required />
           </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter password" required />
+          </div>
+          <button type="submit" class="primary-btn full-btn">Sign In</button>
+        </form>
+        <p class="auth-toggle-text">Don't have an account? <a href="#" id="toSignupLink">Create yours now</a></p>
+      </div>
+
+      <!-- Signup Card -->
+      <div id="signupCard" style="display: none;">
+        <h2>Create Account</h2>
+        <p class="modal-subtitle">Join us for a premium shopping experience.</p>
+        <form id="signupForm" class="modal-form">
+          <div class="form-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" placeholder="John Doe" required />
+          </div>
+          <div class="form-group">
+            <label for="signupEmail">Email Address</label>
+            <input type="email" id="signupEmail" placeholder="name@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="Minimum 6 characters" minlength="6" required />
+          </div>
+          <button type="submit" class="primary-btn full-btn">Create Account</button>
+        </form>
+        <p class="auth-toggle-text">Already have an account? <a href="#" id="toLoginLink">Sign in here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Drawer (Apple-style Slide in from Right) -->
+  <div id="cartDrawer" class="cart-drawer-overlay" hidden>
+    <div class="cart-drawer">
+      <div class="cart-drawer-header">
+        <h2>Your Bag</h2>
+        <button id="closeCartBtn" class="close-drawer-btn" aria-label="Close Bag">✕</button>
+      </div>
+
+      <div class="cart-drawer-body">
+        <div id="cartItemsContainer">
+          <!-- Dynamically inserted by JS -->
+          <p class="empty-cart-msg">Your bag is empty.</p>
         </div>
 
-        <div class="order-column">
-          <form id="orderForm" class="order-form">
-            <input type="hidden" id="productId" name="productId" />
-
+        <div id="checkoutFormContainer" class="checkout-form-container" style="display: none;">
+          <h3>Shipping & Checkout</h3>
+          <form id="checkoutForm" class="modal-form">
             <div class="form-group">
               <label for="customerName">Full Name</label>
-              <input
-                type="text"
-                id="customerName"
-                name="customerName"
-                placeholder="Enter your name"
-                required
-              />
+              <input type="text" id="customerName" placeholder="Enter full name" required />
             </div>
-
             <div class="form-group">
-              <label for="shippingAddress">Address</label>
-              <input
-                type="text"
-                id="shippingAddress"
-                name="shippingAddress"
-                placeholder="Shipping address"
-                required
-              />
+              <label for="shippingAddress">Shipping Address</label>
+              <input type="text" id="shippingAddress" placeholder="Street, City, Zip" required />
             </div>
-
-            <div class="form-group">
-              <label for="quantity">Quantity</label>
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                min="1"
-                value="1"
-                required
-              />
-            </div>
-
-            <button type="submit" class="submit-btn" id="orderButton" disabled>
-              Complete Order
-            </button>
-            <div id="orderMessage" class="order-feedback"></div>
           </form>
         </div>
       </div>
+
+      <div class="cart-drawer-footer">
+        <div class="cart-totals">
+          <span>Subtotal</span>
+          <strong id="cartSubtotal">$0.00</strong>
+        </div>
+        <p class="tax-shipping-info">Shipping and taxes calculated at checkout.</p>
+
+        <button id="checkoutBtn" class="primary-btn full-btn" disabled>Proceed to Checkout</button>
+        <button id="placeOrderBtn" class="payment-btn full-btn" style="display: none;">
+          <span class="rzp-logo-text">Razorpay</span> Secure Checkout
+        </button>
+        <button id="backToCartBtn" class="secondary-btn full-btn" style="display: none;">Back to Bag</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div id="productDetailModal" class="modal-overlay" hidden>
+    <div class="modal-container product-modal-container">
+      <button class="close-modal-btn" id="closeProductDetailModal">✕</button>
+      <div class="product-detail-grid">
+        <div class="product-detail-image-sec">
+          <div id="modalProductImage" class="modal-product-image">PRODUCT IMAGE</div>
+        </div>
+        <div class="product-detail-info-sec">
+          <span id="modalProductGender" class="product-badge">UNISEX</span>
+          <h2 id="modalProductName">Product Name</h2>
+          <div class="rating-container">
+            <span id="modalProductRatingStars">★★★★★</span>
+            <span id="modalProductRatingCount" class="rating-count">(0 reviews)</span>
+          </div>
+          <p id="modalProductPrice" class="detail-price">$0.00</p>
+          <p id="modalProductDescription" class="detail-desc">No description available.</p>
+
+          <div class="detail-options">
+            <div class="options-group">
+              <label>Select Size</label>
+              <div class="size-chips" id="modalProductSizes">
+                <!-- Size elements injected here -->
+              </div>
+            </div>
+
+            <div class="options-group">
+              <label>Select Color</label>
+              <div class="color-chips" id="modalProductColors">
+                <!-- Color elements injected here -->
+              </div>
+            </div>
+          </div>
+
+          <button id="modalAddToBagBtn" class="primary-btn full-btn">Add to Bag</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main View Router -->
+  <main id="mainContent">
+
+    <!-- HOME PAGE -->
+    <section id="page-home" class="page-section active">
+      <!-- Hero Banner 1 (Premium & Cinematic) -->
+      <section class="hero-banner main-hero">
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-text-wrapper">
+          <span class="hero-subtitle">NEW ARRIVALS 2026</span>
+          <h1 class="hero-title">Summer Collection</h1>
+          <p class="hero-description">Clean cuts, soft pastel tones, and highly breathable fabrics crafted for
+            effortless warm-weather style.</p>
+          <div class="hero-buttons">
+            <a href="#products" class="hero-btn primary-hero-btn" data-gender="Women">Shop Women</a>
+            <a href="#products" class="hero-btn secondary-hero-btn" data-gender="Men">Shop Men</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hero Banner 2 (Secondary Style Contrast) -->
+      <section class="hero-banner secondary-hero">
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-text-wrapper">
+          <span class="hero-subtitle">ESSENTIAL DENIM</span>
+          <h1 class="hero-title">Recycled Denim. Built for Life.</h1>
+          <p class="hero-description">Classic indigo shades washed with zero harsh chemicals. Structured, durable, and
+            styled for comfort.</p>
+          <div class="hero-buttons">
+            <a href="#products" class="hero-btn white-hero-btn" data-gender="all">Explore Denim Collection</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Cards Carousel -->
+      <section class="collection-section">
+        <div class="collection-header">
+          <div class="header-left">
+            <span class="sec-subtitle font-caps">CURATED SPECIALS</span>
+            <h2>Featured Products</h2>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">✕</button>
+            <button class="carousel-btn next" id="carouselNext" aria-label="Next">❯</button>
+          </div>
+        </div>
+
+        <div class="carousel-container">
+          <div class="carousel-track" id="carouselTrack">
+            <!-- Cards generated dynamically via JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Video Section (Apple Style Cinematic Promo) -->
+      <section class="video-section">
+        <div class="video-overlay-text">
+          <span class="video-subtitle">CRAFTED FOR MOTION</span>
+          <h2>A Wardrobe That Moves With You</h2>
+          <p>Every seam, every stitch, engineered with precision. Our 2026 line reimagines comfort for active, everyday
+            living.</p>
+          <button id="playVideoButton" class="play-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Watch the Cinematic Edit
+          </button>
+        </div>
+        <!-- Premium styled background element mimicking video placeholder -->
+        <div class="video-placeholder-bg"></div>
+      </section>
     </section>
+
+    <!-- PRODUCTS CATALOG PAGE -->
+    <section id="page-products" class="page-section" style="display: none;">
+      <div class="catalog-container">
+        <!-- Catalog Header & Breadcrumb -->
+        <div class="catalog-header">
+          <h1 id="catalogTitle">Shop All Products</h1>
+          <p id="catalogSubtitle">Discover refined, comfortable silhouettes made for your rotation.</p>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="catalog-filters-bar">
+          <div class="filters-left">
+            <button class="filter-tab active" data-filter-gender="all">All</button>
+            <button class="filter-tab" data-filter-gender="Men">Men</button>
+            <button class="filter-tab" data-filter-gender="Women">Women</button>
+            <button class="filter-tab" data-filter-category="Accessories">Accessories</button>
+          </div>
+          <div class="filters-right">
+            <label for="sortBySelect" class="sort-label">Sort by</label>
+            <select id="sortBySelect" class="sort-select">
+              <option value="featured">Featured</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="products-grid" id="productsGrid">
+          <!-- Injected dynamically by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- OFFERS PAGE -->
+    <section id="page-offers" class="page-section" style="display: none;">
+      <div class="standard-container offers-container">
+        <div class="section-title-center">
+          <span class="tagline">EXCLUSIVES</span>
+          <h1>Current Offers</h1>
+          <p>Apple-inspired seasonal rates, bundles, and membership incentives.</p>
+        </div>
+
+        <div class="offers-grid">
+          <!-- Offer Card 1 -->
+          <div class="offer-card premium-offer-card">
+            <div class="offer-badge">LIMITED TIME</div>
+            <h3>Seasonal Refresh Bundle</h3>
+            <p>Purchase any Outerwear piece and get a classic Cotton T-Shirt at 50% off. Discount applied automatically
+              during checkout.</p>
+            <div class="offer-footer">
+              <span class="promo-code">AUTO-APPLIED</span>
+              <a href="#products" class="primary-btn">Shop Outerwear</a>
+            </div>
+          </div>
+
+          <!-- Offer Card 2 -->
+          <div class="offer-card">
+            <div class="offer-badge">FIRST PURCHASE</div>
+            <h3>Welcome Privilege</h3>
+            <p>Create a Fashion House account today and secure 10% off your first checkout. Code emailed directly after
+              signup verification.</p>
+            <div class="offer-footer">
+              <span class="promo-code">WELCOME10</span>
+              <a href="#home" class="secondary-btn to-auth-trigger">Sign Up Now</a>
+            </div>
+          </div>
+
+          <!-- Offer Card 3 -->
+          <div class="offer-card">
+            <div class="offer-badge">DELIVERY</div>
+            <h3>Complimentary Express Delivery</h3>
+            <p>Every order above $100 enjoys complimentary express shipping. Delivery guaranteed within 2-3 business
+              days.</p>
+            <div class="offer-footer">
+              <span class="promo-code">COMPLIMENTARY</span>
+              <a href="#products" class="secondary-btn">Browse Shop</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT PAGE -->
+    <section id="page-about" class="page-section" style="display: none;">
+      <div class="standard-container about-container">
+        <div class="about-hero">
+          <span class="tagline">OUR PHILOSOPHY</span>
+          <h1>Minimalist Aesthetics. Durable Engineering.</h1>
+          <p>We believe that garments should be designed with the same care, simplicity, and structural integrity as
+            premium hardware.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-block">
+            <h3>Designed for Lifespan</h3>
+            <p>Every seam is double-locked. Buttons are reinforced. We run intense wear tests on all prototypes to
+              ensure that our styles last seasons, not months. We prioritize longevity over transient trends.</p>
+          </div>
+          <div class="about-block">
+            <h3>Ethical Sourcing</h3>
+            <p>We partner exclusively with clean, certified manufacturing hubs. Our textiles are woven from
+              GOTS-certified organic cotton, clean flax linen, and recycled polyester blends.</p>
+          </div>
+        </div>
+
+        <div class="about-stats">
+          <div class="stat-box">
+            <strong>100%</strong>
+            <span>Organic & Recycled Fabrics</span>
+          </div>
+          <div class="stat-box">
+            <strong>Zero</strong>
+            <span>Harsh Dyes or Chemicals</span>
+          </div>
+          <div class="stat-box">
+            <strong>10+</strong>
+            <span>Years Garment Design Integrity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT PAGE -->
+    <section id="page-contact" class="page-section" style="display: none;">
+      <div class="standard-container contact-container">
+        <div class="section-title-center">
+          <span class="tagline">GET IN TOUCH</span>
+          <h1>We're here to assist you</h1>
+          <p>Connect with our client services team for order updates, measurements, or style inquiries.</p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Contact Channels -->
+          <div class="contact-info-panel">
+            <div class="info-card">
+              <h4>Support Hours</h4>
+              <p>Monday - Friday: 9 AM - 6 PM EST</p>
+            </div>
+            <div class="info-card">
+              <h4>Email Inquiry</h4>
+              <p>client.services@fashionhouse.com</p>
+            </div>
+            <div class="info-card">
+              <h4>Call Support</h4>
+              <p>+1 (800) 555-0199 (Toll-Free)</p>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-panel">
+            <form id="contactForm" class="contact-form modal-form">
+              <div class="form-group">
+                <label for="contactName">Your Name</label>
+                <input type="text" id="contactName" placeholder="Enter your name" required />
+              </div>
+              <div class="form-group">
+                <label for="contactEmail">Email Address</label>
+                <input type="email" id="contactEmail" placeholder="name@example.com" required />
+              </div>
+              <div class="form-group">
+                <label for="contactMessage">Message</label>
+                <textarea id="contactMessage" rows="5" placeholder="How can we help you?" required></textarea>
+              </div>
+              <button type="submit" class="primary-btn">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE & ORDER HISTORY PAGE -->
+    <section id="page-profile" class="page-section" style="display: none;">
+      <div class="standard-container profile-container">
+        <div class="profile-header-card">
+          <div class="user-avatar-circle" id="profileAvatar">U</div>
+          <div>
+            <h1 id="profileUserName">Client Profile</h1>
+            <p id="profileUserEmail">email@example.com</p>
+          </div>
+          <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+
+        <div class="order-history-section">
+          <h2>Purchase History</h2>
+          <div id="orderHistoryList">
+            <!-- Dynamically populated by JS -->
+            <p class="empty-orders-msg">No orders recorded yet.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
+  <!-- Video Cinematic Lightbox -->
+  <div id="videoModal" class="modal-overlay" hidden>
+    <div class="modal-container video-modal-container">
+      <button class="close-modal-btn" id="closeVideoModal">✕</button>
+      <div class="video-modal-body">
+        <video id="cinematicVideo" width="100%" height="auto" controls preload="metadata">
+          <!-- Public sample MP4 source that is always active -->
+          <source
+            src="https://assets.mixkit.co/videos/preview/mixkit-fashion-woman-with-silver-makeup-wearing-black-coat-40081-large.mp4"
+            type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
   <footer class="site-footer">
-    <p>Fashion House © 2026</p>
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h3>Fashion House</h3>
+        <p>A clothing brand inspired by precision design, hardware aesthetic, and minimal palettes.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="#products">Shop All</a>
+          <a href="#products" data-gender="Men">Men's Collection</a>
+          <a href="#products" data-gender="Women">Women's Collection</a>
+        </div>
+        <div class="footer-col">
+          <h4>Privilege</h4>
+          <a href="#offers">Current Offers</a>
+          <a href="#about">Our Story</a>
+          <a href="#contact">Contact Support</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Fashion House © 2026. Made with Apple aesthetics for premium development.</p>
+    </div>
   </footer>
 
   <script src="app.js"></script>
 </body>
+
 </html>

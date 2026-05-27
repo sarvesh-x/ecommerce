@@ -1,61 +1,88 @@
-const { products } = require('../data/sampleData');
+const productService = require('../services/productService');
 
-exports.getAllProducts = (req, res) => {
-  res.json(products);
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await productService.getAllProducts();
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to retrieve products' });
+  }
 };
 
-exports.getProductById = (req, res) => {
-  const product = products.find((item) => item.id === req.params.id);
-  if (!product) {
-    return res.status(404).json({ error: 'Product not found' });
+exports.getProductById = async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to retrieve product details' });
   }
-  res.json(product);
 };
 
-exports.createProduct = (req, res) => {
-  const { name, price, description, inventory, sizes, colors } = req.body;
-  if (!name || price == null) {
-    return res.status(400).json({ error: 'Name and price are required' });
+exports.createProduct = async (req, res) => {
+  try {
+    const { name, price, description, inventory, sizes, colors, category, gender } = req.body;
+    if (!name || price == null) {
+      return res.status(400).json({ error: 'Name and price are required' });
+    }
+
+    const newProduct = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name,
+      price: parseFloat(price),
+      description: description || '',
+      inventory: inventory != null ? parseInt(inventory, 10) : 0,
+      sizes: Array.isArray(sizes) ? sizes : [],
+      colors: Array.isArray(colors) ? colors : [],
+      category: category || 'Casual',
+      gender: gender || 'Unisex',
+      createdAt: new Date().toISOString(),
+    };
+
+    await productService.createProduct(newProduct);
+    res.status(201).json(newProduct);
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to create product' });
   }
-
-  const newProduct = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    name,
-    price,
-    description: description || '',
-    inventory: inventory != null ? inventory : 0,
-    sizes: Array.isArray(sizes) ? sizes : [],
-    colors: Array.isArray(colors) ? colors : [],
-    createdAt: new Date().toISOString(),
-  };
-
-  products.push(newProduct);
-  res.status(201).json(newProduct);
 };
 
-exports.updateProduct = (req, res) => {
-  const product = products.find((item) => item.id === req.params.id);
-  if (!product) {
-    return res.status(404).json({ error: 'Product not found' });
+exports.updateProduct = async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    const { name, price, description, inventory, sizes, colors, category, gender } = req.body;
+    const updates = {};
+    if (name != null) updates.name = name;
+    if (price != null) updates.price = parseFloat(price);
+    if (description != null) updates.description = description;
+    if (inventory != null) updates.inventory = parseInt(inventory, 10);
+    if (sizes != null) updates.sizes = Array.isArray(sizes) ? sizes : [sizes];
+    if (colors != null) updates.colors = Array.isArray(colors) ? colors : [colors];
+    if (category != null) updates.category = category;
+    if (gender != null) updates.gender = gender;
+
+    const updatedProduct = await productService.updateProduct(req.params.id, updates);
+    res.json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to update product' });
   }
-
-  const { name, price, description, inventory, sizes, colors } = req.body;
-  if (name != null) product.name = name;
-  if (price != null) product.price = price;
-  if (description != null) product.description = description;
-  if (inventory != null) product.inventory = inventory;
-  if (sizes != null) product.sizes = Array.isArray(sizes) ? sizes : product.sizes;
-  if (colors != null) product.colors = Array.isArray(colors) ? colors : product.colors;
-
-  res.json(product);
 };
 
-exports.deleteProduct = (req, res) => {
-  const index = products.findIndex((item) => item.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Product not found' });
-  }
+exports.deleteProduct = async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
 
-  products.splice(index, 1);
-  res.status(204).send();
+    await productService.deleteProduct(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to delete product' });
+  }
 };
