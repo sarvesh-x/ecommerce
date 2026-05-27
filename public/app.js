@@ -83,7 +83,7 @@ function showToast(message, duration = 3000) {
 // ==========================================
 function handleRoute() {
   const hash = window.location.hash || '#home';
-  
+
   // Hide all sections
   pageSections.forEach(section => {
     section.style.display = 'none';
@@ -98,11 +98,11 @@ function handleRoute() {
     const targetSection = document.getElementById('page-products');
     targetSection.style.display = 'block';
     targetSection.classList.add('active');
-    
+
     // Read parameters from link context if applicable
     const activeLink = document.querySelector(`.nav-link[href="#products"]`);
     if (activeLink) activeLink.classList.add('active');
-    
+
     loadProductsPage();
   } else if (hash === '#offers') {
     const targetSection = document.getElementById('page-offers');
@@ -157,7 +157,7 @@ navLinks.forEach(link => {
       const gender = link.getAttribute('data-gender');
       activeGenderFilter = gender || 'all';
       activeCategoryFilter = '';
-      
+
       // Update filter buttons on products page if already active
       const filterBtn = document.querySelector(`.filter-tab[data-filter-gender="${activeGenderFilter}"]`);
       if (filterBtn) {
@@ -191,7 +191,7 @@ if (savedTheme === 'dark') {
 darkModeToggle.addEventListener('click', () => {
   body.classList.toggle('dark-mode');
   const isDark = body.classList.contains('dark-mode');
-  
+
   if (isDark) {
     localStorage.setItem('fh_theme', 'dark');
     sunIcon.style.display = 'none';
@@ -269,7 +269,7 @@ loginForm.addEventListener('submit', async (e) => {
     user = data.user;
     localStorage.setItem('fh_token', token);
     localStorage.setItem('fh_user', JSON.stringify(user));
-    
+
     authModal.setAttribute('hidden', '');
     loginForm.reset();
     updateAuthUI();
@@ -360,7 +360,7 @@ function renderHomeCarousel() {
 
   // Filter featured products or just select higher priced ones
   const featured = products.filter(p => p.featured || p.price > 45);
-  
+
   track.innerHTML = featured.map(product => `
     <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
       <div class="carousel-card-image" style="background-image: url('${product.image || ''}')">${!product.image ? product.name : ''}</div>
@@ -391,7 +391,7 @@ if (carouselPrev && carouselNext && carouselTrack) {
 
 function loadProductsPage() {
   renderCatalogGrid();
-  
+
   // Setup filters
   const filterTabs = document.querySelectorAll('.filter-tab');
   filterTabs.forEach(tab => {
@@ -399,7 +399,7 @@ function loadProductsPage() {
     tab.classList.remove('active');
     const gender = tab.getAttribute('data-filter-gender');
     const category = tab.getAttribute('data-filter-category');
-    
+
     if (gender === activeGenderFilter && !category) {
       tab.classList.add('active');
     } else if (category === activeCategoryFilter && !gender) {
@@ -414,7 +414,7 @@ function renderCatalogGrid() {
 
   // Filter logic
   let filtered = [...products];
-  
+
   if (activeGenderFilter && activeGenderFilter !== 'all') {
     filtered = filtered.filter(p => p.gender === activeGenderFilter);
     document.getElementById('catalogTitle').textContent = `${activeGenderFilter}'s Premium Essentials`;
@@ -429,8 +429,8 @@ function renderCatalogGrid() {
 
   if (activeSearchQuery) {
     const q = activeSearchQuery.toLowerCase();
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(q) || 
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q)
     );
   }
@@ -589,9 +589,9 @@ closeProductDetailModal.addEventListener('click', () => {
 modalAddToBagBtn.addEventListener('click', () => {
   if (!currentDetailProduct) return;
 
-  const itemIndex = cart.findIndex(item => 
-    item.id === currentDetailProduct.id && 
-    item.size === selectedSize && 
+  const itemIndex = cart.findIndex(item =>
+    item.id === currentDetailProduct.id &&
+    item.size === selectedSize &&
     item.color === selectedColor
   );
 
@@ -853,13 +853,13 @@ async function verifyPayment(orderId, paymentDetails) {
     cart = [];
     localStorage.removeItem('fh_cart');
     updateCartBadge();
-    
+
     cartDrawer.setAttribute('hidden', '');
     resetCheckoutViewState();
-    
+
     placeOrderBtn.disabled = false;
     placeOrderBtn.innerHTML = '<span class="rzp-logo-text">Razorpay</span> Secure Checkout';
-    
+
     showToast('Success! Your purchase is confirmed.');
     window.location.hash = '#profile';
   } catch (error) {
@@ -885,7 +885,7 @@ async function loadProfilePage() {
     });
 
     const ordersList = await response.json();
-    
+
     if (!response.ok) {
       list.innerHTML = `<p class="empty-orders-msg">Failed to load order history: ${ordersList.error}</p>`;
       return;

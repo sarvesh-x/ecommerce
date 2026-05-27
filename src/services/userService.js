@@ -8,7 +8,6 @@ exports.createUser = async (user) => {
   return await userRepository.createUser(user);
 };
 
-const { GetCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
 
 const USERS_TABLE = process.env.USERS_TABLE || 'EcommerceUsers';
 
