@@ -27,3 +27,6 @@ Open the storefront in your browser at:
 ## Notes
 
 This starter uses in-memory data and is ideal for prototyping. Extend it with a database, authentication, payment integration, and a real product catalog as needed.
+
+
+Welcome Sagar
