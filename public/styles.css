@@ -76,7 +76,12 @@ a:hover {
 }
 
 /* Typography Utilities */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -147,7 +152,8 @@ h1, h2, h3, h4, h5, h6 {
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   opacity: 1;
   color: var(--text);
 }
@@ -159,7 +165,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Icon Buttons */
-.icon-btn, .cart-btn {
+.icon-btn,
+.cart-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -173,7 +180,8 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-.icon-btn:hover, .cart-btn:hover {
+.icon-btn:hover,
+.cart-btn:hover {
   background-color: var(--bg-offset);
 }
 
@@ -295,6 +303,13 @@ body.dark-mode .secondary-hero {
   animation: contentUp 0.8s var(--ease-standard);
 }
 
+/* Align secondary hero content to right */
+.secondary-hero .hero-text-wrapper {
+  margin-left: auto;
+  margin-right: 10%;
+  text-align: right;
+}
+
 .hero-subtitle {
   font-size: 0.75rem;
   font-weight: 700;
@@ -323,6 +338,11 @@ body.dark-mode .secondary-hero {
 .hero-buttons {
   display: flex;
   gap: 15px;
+}
+
+/* Align buttons of secondary hero to the right */
+.secondary-hero .hero-buttons {
+  justify-content: flex-end;
 }
 
 .hero-btn {
@@ -356,6 +376,30 @@ body.dark-mode .secondary-hero {
 
 body.dark-mode .secondary-hero-btn:hover {
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Main Hero Banner Layout */
+.main-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-hero .hero-text-wrapper {
+  flex: 1;
+  max-width: 55%;
+}
+
+.main-hero .hero-image {
+  flex: 1;
+  max-width: 45%;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: var(--radius-standard);
 }
 
 .white-hero-btn {
@@ -398,12 +442,14 @@ body.dark-mode .secondary-hero-btn:hover {
   gap: 20px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
+  /* Firefox */
   padding: 15px 5px;
 }
 
 .carousel-track::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
+  /* Chrome/Safari */
 }
 
 /* Featured Card */
@@ -423,11 +469,11 @@ body.dark-mode .secondary-hero-btn:hover {
 
 .carousel-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
 }
 
 body.dark-mode .carousel-card:hover {
-  box-shadow: 0 12px 35px rgba(0,0,0,0.55);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
 }
 
 .carousel-card-image {
@@ -611,7 +657,8 @@ body.dark-mode .carousel-card:hover {
   -webkit-backdrop-filter: blur(8px);
 }
 
-.modal-overlay[hidden], .search-modal[hidden] {
+.modal-overlay[hidden],
+.search-modal[hidden] {
   display: none !important;
 }
 
@@ -676,7 +723,9 @@ body.dark-mode .carousel-card:hover {
   color: var(--text-secondary);
 }
 
-.form-group input, .form-group textarea, .sort-select {
+.form-group input,
+.form-group textarea,
+.sort-select {
   padding: 12px 14px;
   font-family: var(--font-body);
   font-size: 0.9rem;
@@ -688,7 +737,8 @@ body.dark-mode .carousel-card:hover {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-group input:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group textarea:focus {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px var(--accent-light);
 }
@@ -1038,7 +1088,8 @@ body.dark-mode .carousel-card:hover {
   transition: all 0.2s ease;
 }
 
-.filter-tab:hover, .filter-tab.active {
+.filter-tab:hover,
+.filter-tab.active {
   background-color: var(--text);
   color: var(--bg);
 }
@@ -1250,7 +1301,8 @@ body.dark-mode .product-card:hover {
   color: var(--text-secondary);
 }
 
-.size-chips, .color-chips {
+.size-chips,
+.color-chips {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -1266,7 +1318,8 @@ body.dark-mode .product-card:hover {
   transition: all 0.2s ease;
 }
 
-.size-chip:hover, .size-chip.selected {
+.size-chip:hover,
+.size-chip.selected {
   border-color: var(--text);
   background-color: var(--text);
   color: var(--bg);
@@ -1282,7 +1335,8 @@ body.dark-mode .product-card:hover {
   transition: all 0.2s ease;
 }
 
-.color-chip:hover, .color-chip.selected {
+.color-chip:hover,
+.color-chip.selected {
   border-color: var(--text);
   background-color: var(--text);
   color: var(--bg);
@@ -1720,33 +1774,71 @@ body.dark-mode .product-card:hover {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideLeft {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes zoomUp {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @keyframes contentUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeUp {
-  from { transform: translate(-50%, 15px); opacity: 0; }
-  to { transform: translate(-50%, 0); opacity: 1; }
+  from {
+    transform: translate(-50%, 15px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
 }
 
 /* Responsive adjustments */
@@ -1754,16 +1846,18 @@ body.dark-mode .product-card:hover {
   .header-container {
     padding: 0 16px;
   }
-  
+
   .nav-primary {
-    display: none; /* Mobile menu can be toggled or fallback */
+    display: none;
+    /* Mobile menu can be toggled or fallback */
   }
 
   .product-detail-grid {
     grid-template-columns: 1fr;
   }
 
-  .about-grid, .contact-grid {
+  .about-grid,
+  .contact-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1778,7 +1872,7 @@ body.dark-mode .product-card:hover {
   .video-section {
     height: auto;
   }
-  
+
   .video-overlay-text {
     padding: 24px;
   }
