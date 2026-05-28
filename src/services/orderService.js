@@ -8,8 +8,12 @@ exports.getOrdersByUser = async (userId) => {
   return await orderRepository.getOrdersByUser(userId);
 };
 
-exports.updateOrder = async (orderId, updates) => {
-  return await orderRepository.updateOrder(orderId, updates);
+exports.updateOrder = async (userIdOrOrderId, orderIdOrUpdates, maybeUpdates) => {
+  if (maybeUpdates) {
+    return await orderRepository.updateOrder(userIdOrOrderId, orderIdOrUpdates, maybeUpdates);
+  }
+
+  return await orderRepository.updateOrder(null, userIdOrOrderId, orderIdOrUpdates);
 };
 
 exports.getOrderById = async (orderId) => {

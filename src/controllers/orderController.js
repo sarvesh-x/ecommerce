@@ -76,3 +76,35 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ error: 'Unable to create order' });
   }
 };
+
+exports.cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    if (!orderId) {
+      return res.status(400).json({ error: 'orderId is required' });
+    }
+
+    const order = await orderService.getOrderById(orderId);
+    if (!order || order.userId !== req.user.userId) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    if (order.status === 'cancelled') {
+      return res.status(400).json({ error: 'Order is already cancelled' });
+    }
+
+    if (order.status === 'paid') {
+      return res.status(400).json({ error: 'Paid orders cannot be cancelled from this page. Please contact support.' });
+    }
+
+    const updatedOrder = await orderService.updateOrder(req.user.userId, orderId, {
+      status: 'cancelled',
+      cancelledAt: new Date().toISOString(),
+    });
+
+    return res.json({ order: updatedOrder });
+  } catch (error) {
+    console.error('Error in cancelOrder:', error);
+    return res.status(500).json({ error: 'Unable to cancel order' });
+  }
+};

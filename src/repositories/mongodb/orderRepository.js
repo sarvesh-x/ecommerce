@@ -9,6 +9,11 @@ const orderSchema = new mongoose.Schema({
   total: { type: Number, required: true },
   status: { type: String, default: 'pending' },
   razorpayOrderId: String,
+  razorpayPaymentId: String,
+  razorpaySignature: String,
+  paymentCaptured: Boolean,
+  cancelledAt: Date,
+  productId: String,
   productName: String,
   quantity: { type: Number, default: 1 },
   items: [{
@@ -42,6 +47,11 @@ exports.createOrder = async (order) => {
       total: order.total,
       status: order.status || 'pending',
       razorpayOrderId: order.razorpayOrderId,
+      razorpayPaymentId: order.razorpayPaymentId,
+      razorpaySignature: order.razorpaySignature,
+      paymentCaptured: order.paymentCaptured,
+      cancelledAt: order.cancelledAt,
+      productId: order.productId,
       productName: order.productName,
       quantity: order.quantity,
       items: order.items,
@@ -76,7 +86,9 @@ exports.getOrdersByUser = async (userId) => {
       total: o.total,
       status: o.status,
       razorpayOrderId: o.razorpayOrderId,
+      cancelledAt: o.cancelledAt,
       createdAt: o.createdAt,
+      productId: o.productId,
       productName: o.productName,
       quantity: o.quantity,
       items: o.items,
@@ -89,18 +101,19 @@ exports.getOrdersByUser = async (userId) => {
   }
 };
 
-exports.updateOrder = async (orderId, updates) => {
+exports.updateOrder = async (userId, orderId, updates) => {
   try {
     if (!mongoose.connection.readyState) {
       // Fallback to memory
-      const order = memoryOrders.find((o) => o.orderId === orderId);
+      const order = memoryOrders.find((o) => o.orderId === orderId && (!userId || o.userId === userId));
       if (!order) return null;
       Object.assign(order, updates, { updatedAt: new Date() });
       return order;
     }
 
+    const query = userId ? { orderId, userId } : { orderId };
     const order = await Order.findOneAndUpdate(
-      { orderId },
+      query,
       {
         ...updates,
         updatedAt: new Date(),
@@ -118,14 +131,16 @@ exports.updateOrder = async (orderId, updates) => {
       total: order.total,
       status: order.status,
       razorpayOrderId: order.razorpayOrderId,
+      cancelledAt: order.cancelledAt,
       createdAt: order.createdAt,
+      productId: order.productId,
       productName: order.productName,
       quantity: order.quantity,
       items: order.items,
     };
   } catch (error) {
     console.warn(`MongoDB: Failed to update order ${orderId}, falling back to memory database. Error: ${error.message}`);
-    const order = memoryOrders.find((o) => o.orderId === orderId);
+    const order = memoryOrders.find((o) => o.orderId === orderId && (!userId || o.userId === userId));
     if (!order) return null;
     Object.assign(order, updates, { updatedAt: new Date() });
     return order;
@@ -149,7 +164,9 @@ exports.getOrderById = async (orderId) => {
       total: order.total,
       status: order.status,
       razorpayOrderId: order.razorpayOrderId,
+      cancelledAt: order.cancelledAt,
       createdAt: order.createdAt,
+      productId: order.productId,
       productName: order.productName,
       quantity: order.quantity,
       items: order.items,

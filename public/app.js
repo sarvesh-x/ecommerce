@@ -55,6 +55,7 @@ const closeSearch = document.getElementById('closeSearch');
 const productDetailModal = document.getElementById('productDetailModal');
 const closeProductDetailModal = document.getElementById('closeProductDetailModal');
 const modalProductImage = document.getElementById('modalProductImage');
+const modalProductThumbnails = document.getElementById('modalProductThumbnails');
 const modalProductGender = document.getElementById('modalProductGender');
 const modalProductName = document.getElementById('modalProductName');
 const modalProductBrand = document.getElementById('modalProductBrand');
@@ -264,6 +265,60 @@ function renderLoadingCards(container, count = 4, cardClass = 'skeleton-card') {
       <span class="skeleton-line short"></span>
     </div>
   `).join('');
+}
+
+function getProductMediaImages(product) {
+  const imageEntries = Array.isArray(product?.images) ? product.images : [];
+  const imageUrls = imageEntries
+    .map(entry => (typeof entry === 'string' ? { url: entry, alt: product.name } : entry))
+    .filter(entry => entry && entry.url);
+
+  let urls = [
+    product?.thumbnail,
+    product?.image,
+    ...imageUrls.map(entry => entry.url),
+  ].filter(Boolean);
+
+  // Filter out known fake/placeholder images if we have other valid images
+  const filteredUrls = urls.filter(url => 
+    !url.includes('thumb.webp') && 
+    !url.includes('placeholder-') &&
+    !url.includes('/placeholder')
+  );
+
+  if (filteredUrls.length > 0) {
+    urls = filteredUrls;
+  }
+
+  return [...new Set(urls)].map((url) => {
+    const entry = imageUrls.find(item => item.url === url);
+    return {
+      url,
+      alt: entry?.alt || product?.name || 'Product image',
+    };
+  });
+}
+
+function getProductImageUrl(product) {
+  return getProductMediaImages(product)[0]?.url || '';
+}
+
+function setProductImageElement(element, product, imageUrl = getProductImageUrl(product)) {
+  if (!element) return;
+
+  if (imageUrl) {
+    element.style.backgroundImage = `url('${escapeStyleUrl(imageUrl)}')`;
+    element.classList.add('has-image');
+    element.textContent = '';
+    element.setAttribute('role', 'img');
+    element.setAttribute('aria-label', product.name || 'Product image');
+  } else {
+    element.style.backgroundImage = 'none';
+    element.classList.remove('has-image');
+    element.textContent = product.name || 'Product image';
+    element.removeAttribute('role');
+    element.removeAttribute('aria-label');
+  }
 }
 
 function formatMoney(amount, currency = 'INR') {
@@ -656,7 +711,7 @@ function renderHomeCarousel() {
   track.innerHTML = featured.map(product => `
     <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
       ${renderWishlistButton(product.id, 'wishlist-card-btn carousel-wishlist-btn')}
-      <div class="carousel-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">${escapeHtml(truncateText(product.name, 42))}</div>
+      <div class="carousel-card-image${getProductImageUrl(product) ? ' has-image' : ''}" style="${getProductImageUrl(product) ? `background-image: url('${escapeStyleUrl(getProductImageUrl(product))}')` : ''}">${getProductImageUrl(product) ? '' : escapeHtml(truncateText(product.name, 42))}</div>
       <h3 title="${escapeAttribute(product.name)}">${truncateText(product.name, 34)}</h3>
       <p title="${escapeAttribute(product.description)}">${escapeHtml(truncateText(product.description || '', 96))}</p>
       <div class="carousel-card-footer">
@@ -749,8 +804,8 @@ function renderCatalogGrid() {
   grid.innerHTML = filtered.map(product => `
     <div class="product-card" onclick="viewProductDetail('${product.id}')">
       ${renderWishlistButton(product.id)}
-      <div class="product-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">
-        ${escapeHtml(product.name)}
+      <div class="product-card-image${getProductImageUrl(product) ? ' has-image' : ''}" style="${getProductImageUrl(product) ? `background-image: url('${escapeStyleUrl(getProductImageUrl(product))}')` : ''}">
+        ${getProductImageUrl(product) ? '' : escapeHtml(product.name)}
       </div>
       <span class="product-card-badge">${escapeHtml((product.category || 'Gear').toUpperCase())}</span>
       <h3>${escapeHtml(product.name)}</h3>
@@ -839,13 +894,7 @@ function viewProductDetail(id) {
   modalProductRawCategory.textContent = product.rawCategory || product.category || 'Gear';
   modalProductSubCategory.textContent = product.subCategory || 'General';
 
-  if (product.image) {
-    modalProductImage.style.backgroundImage = `url('${product.image}')`;
-    modalProductImage.textContent = product.name;
-  } else {
-    modalProductImage.style.backgroundImage = 'none';
-    modalProductImage.textContent = product.name;
-  }
+  renderProductMedia(product);
 
   const sizeList = product.sizes || ['S', 'M', 'L', 'XL'];
   const colorList = product.colors || ['Black', 'White', 'Navy'];
@@ -881,6 +930,38 @@ function renderProductSpecs(specifications) {
       <dd>${escapeHtml(value)}</dd>
     </div>
   `).join('');
+}
+
+function renderProductMedia(product) {
+  const mediaImages = getProductMediaImages(product);
+  const activeImage = mediaImages[0]?.url || '';
+  setProductImageElement(modalProductImage, product, activeImage);
+
+  if (!modalProductThumbnails) return;
+
+  if (mediaImages.length <= 1) {
+    modalProductThumbnails.innerHTML = '';
+    return;
+  }
+
+  modalProductThumbnails.innerHTML = mediaImages.map((image, index) => `
+    <button
+      type="button"
+      class="product-thumbnail${index === 0 ? ' active' : ''}"
+      aria-label="View ${escapeAttribute(image.alt)}"
+      data-product-thumbnail="${escapeAttribute(image.url)}">
+      <span style="background-image: url('${escapeStyleUrl(image.url)}')"></span>
+    </button>
+  `).join('');
+
+  modalProductThumbnails.querySelectorAll('.product-thumbnail').forEach(button => {
+    button.addEventListener('click', () => {
+      const imageUrl = button.getAttribute('data-product-thumbnail');
+      setProductImageElement(modalProductImage, product, imageUrl);
+      modalProductThumbnails.querySelectorAll('.product-thumbnail').forEach(thumb => thumb.classList.remove('active'));
+      button.classList.add('active');
+    });
+  });
 }
 
 function renderProductTags(tags) {
@@ -1078,14 +1159,24 @@ function renderCartDrawer() {
   cartItemsContainer.innerHTML = cart.map((item, index) => {
     const itemTotal = item.price * item.quantity;
     total += itemTotal;
+
+    // Resolve clean image (handling placeholders/legacy urls)
+    let imageUrl = item.image || '';
+    if (!imageUrl || imageUrl.includes('thumb.webp') || imageUrl.includes('placeholder')) {
+      const prod = products.find(p => p.id === item.id);
+      if (prod) {
+        imageUrl = getProductImageUrl(prod);
+      }
+    }
+
     return `
       <div class="cart-item">
-        <div class="cart-item-img" style="background-image: url('${item.image || ''}')">
-          ${!item.image ? item.name : ''}
+        <div class="cart-item-img${imageUrl ? ' has-image' : ''}" style="${imageUrl ? `background-image: url('${escapeStyleUrl(imageUrl)}')` : ''}">
+          ${!imageUrl ? escapeHtml(item.name) : ''}
         </div>
         <div class="cart-item-details">
-          <h4>${item.name}</h4>
-          <span class="cart-item-meta">Size: ${item.size} / Color: ${item.color}</span>
+          <h4>${escapeHtml(item.name)}</h4>
+          <span class="cart-item-meta">Size: ${escapeHtml(item.size)} / Color: ${escapeHtml(item.color)}</span>
           <div class="cart-item-actions">
             <div class="qty-control">
               <button class="qty-btn" onclick="updateCartQty(${index}, -1)">-</button>
@@ -1321,21 +1412,34 @@ async function loadProfilePage() {
       const dateStr = new Date(order.createdAt).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric'
       });
+      // Get product image
+      const prod = products.find(p => p.id === order.productId) || products.find(p => p.name === order.productName);
+      const imageUrl = prod ? getProductImageUrl(prod) : '';
+      const currency = order.currency || 'INR';
+
       return `
-        <div class="order-card-item">
+        <div class="order-card-item" id="order-card-${order.orderId}">
           <div class="order-card-header">
             <span>Placed: <strong>${dateStr}</strong></span>
             <span>ID: <strong>${order.orderId.slice(0, 8)}...</strong></span>
             <span>Client: <strong>${order.customerName}</strong></span>
           </div>
           <div class="order-card-body">
-            <div class="order-prod-info">
-              <h4>${order.productName || 'Organic Apparel'}</h4>
-              <p>Qty: ${order.quantity} | Total paid: $${order.total.toFixed(2)}</p>
-              <p style="font-size:0.7rem; color:var(--text-tertiary);">Address: ${order.shippingAddress}</p>
+            <div class="order-main-content">
+              <div class="order-img-container${imageUrl ? ' has-image' : ''}" style="${imageUrl ? `background-image: url('${escapeStyleUrl(imageUrl)}')` : ''}">
+                ${!imageUrl ? escapeHtml((order.productName || 'Gear')[0]) : ''}
+              </div>
+              <div class="order-prod-info">
+                <h4>${escapeHtml(order.productName || 'Skateboard Gear')}</h4>
+                <p>Qty: ${order.quantity} | Total: ${formatMoney(order.total, currency)}</p>
+                <p style="font-size:0.7rem; color:var(--text-tertiary); margin-top: 4px;">Address: ${escapeHtml(order.shippingAddress)}</p>
+              </div>
             </div>
-            <div>
+            <div class="order-card-actions">
               <span class="order-status-badge ${order.status}">${order.status.toUpperCase()}</span>
+              ${order.status === 'pending' ? `
+                <button class="order-cancel-btn" onclick="cancelOrder('${order.orderId}')">Cancel Order</button>
+              ` : ''}
             </div>
           </div>
         </div>
@@ -1346,6 +1450,37 @@ async function loadProfilePage() {
     list.innerHTML = `<p class="empty-orders-msg">Unable to reach the history database.</p>`;
   }
 }
+
+async function cancelOrder(orderId) {
+  if (!confirm('Are you sure you want to cancel this order?')) return;
+
+  const btn = document.querySelector(`#order-card-${orderId} .order-cancel-btn`);
+  if (btn) btn.disabled = true;
+
+  try {
+    const response = await fetch(`/api/orders/${orderId}/cancel`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      showToast(data.error || 'Failed to cancel order.');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    showToast('Order cancelled successfully.');
+    loadProfilePage();
+  } catch (error) {
+    showToast('Unable to cancel order right now.');
+    if (btn) btn.disabled = false;
+  }
+}
+
+window.cancelOrder = cancelOrder;
 
 function renderProfileWishlist(isLoading = false) {
   const container = document.getElementById('profileWishlistList');

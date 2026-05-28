@@ -116,7 +116,10 @@ function toApiProduct(product) {
     : product.description?.short || product.description?.full || '';
   const price = product.pricing?.salePrice ?? product.pricing?.price ?? product.price ?? 0;
   const originalPrice = product.pricing?.price ?? product.price ?? price;
-  const image = product.media?.thumbnail || product.media?.images?.[0]?.url || product.image || '';
+  const thumbnail = product.media?.thumbnail || product.thumbnail || '';
+  // Prioritize real product images from media.images list over a generic/placeholder thumbnail
+  const firstRealImage = product.media?.images?.find(img => img.url && !img.url.includes('thumb.webp') && !img.url.includes('placeholder'))?.url;
+  const image = firstRealImage || product.media?.images?.[0]?.url || product.image || thumbnail || '';
   const ratingAverage = product.rating?.average ?? product.rating?.rate ?? 4.5;
   const inventoryStock = product.inventory?.stock ?? product.inventory ?? 0;
   const reservedStock = product.inventory?.reservedStock ?? 0;
@@ -140,6 +143,7 @@ function toApiProduct(product) {
     rawCategory: product.category,
     gender: normalizeCategory(product.category || product.gender),
     image,
+    thumbnail,
     images: product.media?.images || [],
     brand: product.brand || null,
     subCategory: product.subCategory || '',
