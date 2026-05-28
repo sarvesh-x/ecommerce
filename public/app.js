@@ -1,4 +1,8 @@
 // State Management
+const API_BASE = window.location.origin.includes('localhost:4000') || window.location.origin.includes('127.0.0.1:4000')
+  ? ''
+  : 'http://localhost:4000';
+
 let products = [];
 let cart = JSON.parse(localStorage.getItem('fh_cart')) || [];
 let token = localStorage.getItem('fh_token') || null;
@@ -280,8 +284,8 @@ function getProductMediaImages(product) {
   ].filter(Boolean);
 
   // Filter out known fake/placeholder images if we have other valid images
-  const filteredUrls = urls.filter(url => 
-    !url.includes('thumb.webp') && 
+  const filteredUrls = urls.filter(url =>
+    !url.includes('thumb.webp') &&
     !url.includes('placeholder-') &&
     !url.includes('/placeholder')
   );
@@ -463,7 +467,7 @@ loginForm.addEventListener('submit', async (e) => {
   setButtonLoading(submitBtn, true, 'Signing in...');
 
   try {
-    const response = await fetch('/api/auth/login', {
+    const response = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -507,7 +511,7 @@ signupForm.addEventListener('submit', async (e) => {
   setButtonLoading(submitBtn, true, 'Creating...');
 
   try {
-    const response = await fetch('/api/auth/signup', {
+    const response = await fetch(`${API_BASE}/api/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password })
@@ -583,7 +587,7 @@ async function loadWishlist() {
   }
 
   try {
-    const response = await fetch('/api/wishlist', {
+    const response = await fetch(`${API_BASE}/api/wishlist`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
@@ -617,7 +621,7 @@ async function toggleWishlist(productId, button = null) {
   if (button) button.classList.add('is-busy');
 
   try {
-    const response = await fetch('/api/wishlist', {
+    const response = await fetch(`${API_BASE}/api/wishlist`, {
       method: shouldRemove ? 'DELETE' : 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -681,7 +685,7 @@ async function initApp() {
   renderLoadingCards(document.getElementById('carouselTrack'), 4, 'skeleton-card carousel-skeleton');
   renderLoadingCards(document.getElementById('productsGrid'), 6, 'skeleton-card product-skeleton');
   try {
-    const response = await fetch('/api/products');
+    const response = await fetch(`${API_BASE}/api/products`);
     if (!response.ok) {
       throw new Error(`Products API returned ${response.status}`);
     }
@@ -1258,7 +1262,7 @@ placeOrderBtn.addEventListener('click', async () => {
       shippingAddress: address,
     };
 
-    const response = await fetch('/api/orders', {
+    const response = await fetch(`${API_BASE}/api/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1339,7 +1343,7 @@ async function verifyPayment(orderId, paymentDetails) {
       isBypass: paymentDetails.isBypass || false
     };
 
-    const response = await fetch('/api/payment/verify', {
+    const response = await fetch(`${API_BASE}/api/payment/verify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1392,7 +1396,7 @@ async function loadProfilePage() {
     await loadWishlist();
     renderProfileWishlist();
 
-    const response = await fetch('/api/orders', {
+    const response = await fetch(`${API_BASE}/api/orders`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -1458,8 +1462,8 @@ async function cancelOrder(orderId) {
   if (btn) btn.disabled = true;
 
   try {
-    const response = await fetch(`/api/orders/${orderId}/cancel`, {
-      method: 'PATCH',
+    const response = await fetch(`${API_BASE}/api/orders/${orderId}/cancel`, {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -1503,7 +1507,7 @@ function renderProfileWishlist(isLoading = false) {
   container.innerHTML = savedProducts.map(product => `
     <div class="wishlist-profile-card" onclick="viewProductDetail('${product.id}')">
       <div class="wishlist-profile-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">
-        ${escapeHtml(truncateText(product.name, 32))}
+        
       </div>
       <div class="wishlist-profile-info">
         <span>${escapeHtml((product.category || 'Gear').toUpperCase())}</span>

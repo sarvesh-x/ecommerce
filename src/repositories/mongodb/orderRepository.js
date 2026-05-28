@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const db = require('../../config/db');
 
 // Define Order Schema
 const orderSchema = new mongoose.Schema({
@@ -28,151 +29,115 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
 
-// In-memory fallback datasets
-const memoryOrders = [];
+async function ensureMongoConnection() {
+  if (db.isMongoActive() && mongoose.connection.readyState === 1) return true;
+
+  const connected = await db.connectMongo();
+  if (!connected) {
+    throw new Error('MongoDB is unavailable. Start MongoDB or set MONGODB_URI to store orders.');
+  }
+  return true;
+}
 
 exports.createOrder = async (order) => {
-  try {
-    if (!mongoose.connection.readyState) {
-      // Fallback to memory if no MongoDB connection
-      memoryOrders.push(order);
-      return order;
-    }
+  await ensureMongoConnection();
 
-    const newOrder = new Order({
-      orderId: order.orderId,
-      userId: order.userId,
-      customerName: order.customerName,
-      shippingAddress: order.shippingAddress,
-      total: order.total,
-      status: order.status || 'pending',
-      razorpayOrderId: order.razorpayOrderId,
-      razorpayPaymentId: order.razorpayPaymentId,
-      razorpaySignature: order.razorpaySignature,
-      paymentCaptured: order.paymentCaptured,
-      cancelledAt: order.cancelledAt,
-      productId: order.productId,
-      productName: order.productName,
-      quantity: order.quantity,
-      items: order.items,
-      createdAt: order.createdAt || new Date(),
-      updatedAt: order.updatedAt || new Date(),
-    });
+  const newOrder = new Order({
+    orderId: order.orderId,
+    userId: order.userId,
+    customerName: order.customerName,
+    shippingAddress: order.shippingAddress,
+    total: order.total,
+    status: order.status || 'pending',
+    razorpayOrderId: order.razorpayOrderId,
+    razorpayPaymentId: order.razorpayPaymentId,
+    razorpaySignature: order.razorpaySignature,
+    paymentCaptured: order.paymentCaptured,
+    cancelledAt: order.cancelledAt,
+    productId: order.productId,
+    productName: order.productName,
+    quantity: order.quantity,
+    items: order.items,
+    createdAt: order.createdAt || new Date(),
+    updatedAt: order.updatedAt || new Date(),
+  });
 
-    await newOrder.save();
-    return order;
-  } catch (error) {
-    console.warn(`MongoDB: Failed to create order, falling back to memory database. Error: ${error.message}`);
-    memoryOrders.push(order);
-    return order;
-  }
+  await newOrder.save();
+  return order;
 };
 
 exports.getOrdersByUser = async (userId) => {
-  try {
-    if (!mongoose.connection.readyState) {
-      // Fallback to memory
-      return memoryOrders
-        .filter((o) => o.userId === userId)
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
+  await ensureMongoConnection();
 
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
-    return orders.map((o) => ({
-      userId: o.userId,
-      orderId: o.orderId,
-      customerName: o.customerName,
-      shippingAddress: o.shippingAddress,
-      total: o.total,
-      status: o.status,
-      razorpayOrderId: o.razorpayOrderId,
-      cancelledAt: o.cancelledAt,
-      createdAt: o.createdAt,
-      productId: o.productId,
-      productName: o.productName,
-      quantity: o.quantity,
-      items: o.items,
-    }));
-  } catch (error) {
-    console.warn(`MongoDB: Failed to query orders for user ${userId}, falling back to memory database. Error: ${error.message}`);
-    return memoryOrders
-      .filter((o) => o.userId === userId)
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  }
+  const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+  return orders.map((o) => ({
+    userId: o.userId,
+    orderId: o.orderId,
+    customerName: o.customerName,
+    shippingAddress: o.shippingAddress,
+    total: o.total,
+    status: o.status,
+    razorpayOrderId: o.razorpayOrderId,
+    cancelledAt: o.cancelledAt,
+    createdAt: o.createdAt,
+    productId: o.productId,
+    productName: o.productName,
+    quantity: o.quantity,
+    items: o.items,
+  }));
 };
 
 exports.updateOrder = async (userId, orderId, updates) => {
-  try {
-    if (!mongoose.connection.readyState) {
-      // Fallback to memory
-      const order = memoryOrders.find((o) => o.orderId === orderId && (!userId || o.userId === userId));
-      if (!order) return null;
-      Object.assign(order, updates, { updatedAt: new Date() });
-      return order;
-    }
+  await ensureMongoConnection();
 
-    const query = userId ? { orderId, userId } : { orderId };
-    const order = await Order.findOneAndUpdate(
-      query,
-      {
-        ...updates,
-        updatedAt: new Date(),
-      },
-      { new: true }
-    );
+  const query = userId ? { orderId, userId } : { orderId };
+  const order = await Order.findOneAndUpdate(
+    query,
+    {
+      ...updates,
+      updatedAt: new Date(),
+    },
+    { new: true }
+  );
 
-    if (!order) return null;
+  if (!order) return null;
 
-    return {
-      userId: order.userId,
-      orderId: order.orderId,
-      customerName: order.customerName,
-      shippingAddress: order.shippingAddress,
-      total: order.total,
-      status: order.status,
-      razorpayOrderId: order.razorpayOrderId,
-      cancelledAt: order.cancelledAt,
-      createdAt: order.createdAt,
-      productId: order.productId,
-      productName: order.productName,
-      quantity: order.quantity,
-      items: order.items,
-    };
-  } catch (error) {
-    console.warn(`MongoDB: Failed to update order ${orderId}, falling back to memory database. Error: ${error.message}`);
-    const order = memoryOrders.find((o) => o.orderId === orderId && (!userId || o.userId === userId));
-    if (!order) return null;
-    Object.assign(order, updates, { updatedAt: new Date() });
-    return order;
-  }
+  return {
+    userId: order.userId,
+    orderId: order.orderId,
+    customerName: order.customerName,
+    shippingAddress: order.shippingAddress,
+    total: order.total,
+    status: order.status,
+    razorpayOrderId: order.razorpayOrderId,
+    cancelledAt: order.cancelledAt,
+    createdAt: order.createdAt,
+    productId: order.productId,
+    productName: order.productName,
+    quantity: order.quantity,
+    items: order.items,
+  };
 };
 
 exports.getOrderById = async (orderId) => {
-  try {
-    if (!mongoose.connection.readyState) {
-      return memoryOrders.find((o) => o.orderId === orderId) || null;
-    }
+  await ensureMongoConnection();
 
-    const order = await Order.findOne({ orderId });
-    if (!order) return null;
+  const order = await Order.findOne({ orderId });
+  if (!order) return null;
 
-    return {
-      userId: order.userId,
-      orderId: order.orderId,
-      customerName: order.customerName,
-      shippingAddress: order.shippingAddress,
-      total: order.total,
-      status: order.status,
-      razorpayOrderId: order.razorpayOrderId,
-      cancelledAt: order.cancelledAt,
-      createdAt: order.createdAt,
-      productId: order.productId,
-      productName: order.productName,
-      quantity: order.quantity,
-      items: order.items,
-    };
-  } catch (error) {
-    console.warn(`MongoDB: Failed to get order ${orderId}, falling back to memory database. Error: ${error.message}`);
-    return memoryOrders.find((o) => o.orderId === orderId) || null;
-  }
+  return {
+    userId: order.userId,
+    orderId: order.orderId,
+    customerName: order.customerName,
+    shippingAddress: order.shippingAddress,
+    total: order.total,
+    status: order.status,
+    razorpayOrderId: order.razorpayOrderId,
+    cancelledAt: order.cancelledAt,
+    createdAt: order.createdAt,
+    productId: order.productId,
+    productName: order.productName,
+    quantity: order.quantity,
+    items: order.items,
+  };
 };

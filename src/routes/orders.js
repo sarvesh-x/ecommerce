@@ -6,6 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.use(authMiddleware);
 router.get('/', orderController.getAllOrders);
 router.post('/', orderController.createOrder);
+router.post('/:orderId/cancel', orderController.cancelOrder);
 router.patch('/:orderId/cancel', orderController.cancelOrder);
 
 module.exports = router;

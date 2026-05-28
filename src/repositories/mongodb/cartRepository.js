@@ -25,38 +25,34 @@ try {
   CartModel = mongoose.models.Cart;
 }
 
-// In-memory fallback cart database
-const memoryCarts = {};
+async function ensureMongoConnection() {
+  if (db.isMongoActive() && mongoose.connection.readyState === 1) return true;
+
+  const connected = await db.connectMongo();
+  if (!connected) {
+    throw new Error('MongoDB is unavailable. Start MongoDB or set MONGODB_URI to store cart items.');
+  }
+  return true;
+}
 
 exports.getCart = async (userId) => {
-  if (db.isMongoActive()) {
-    const cart = await CartModel.findOne({ userId }).lean();
-    return cart ? cart.items : [];
-  } else {
-    return memoryCarts[userId] || [];
-  }
+  await ensureMongoConnection();
+  const cart = await CartModel.findOne({ userId }).lean();
+  return cart ? cart.items : [];
 };
 
 exports.saveCart = async (userId, items) => {
-  if (db.isMongoActive()) {
-    await CartModel.findOneAndUpdate(
-      { userId },
-      { $set: { items, updatedAt: new Date() } },
-      { upsert: true, new: true }
-    );
-    return items;
-  } else {
-    memoryCarts[userId] = items;
-    return items;
-  }
+  await ensureMongoConnection();
+  await CartModel.findOneAndUpdate(
+    { userId },
+    { $set: { items, updatedAt: new Date() } },
+    { upsert: true, new: true }
+  );
+  return items;
 };
 
 exports.clearCart = async (userId) => {
-  if (db.isMongoActive()) {
-    await CartModel.deleteOne({ userId });
-    return true;
-  } else {
-    memoryCarts[userId] = [];
-    return true;
-  }
+  await ensureMongoConnection();
+  await CartModel.deleteOne({ userId });
+  return true;
 };

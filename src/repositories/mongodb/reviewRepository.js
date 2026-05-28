@@ -18,26 +18,24 @@ try {
   ReviewModel = mongoose.models.Review;
 }
 
-// In-memory fallback review database
-const memoryReviews = {};
+async function ensureMongoConnection() {
+  if (db.isMongoActive() && mongoose.connection.readyState === 1) return true;
+
+  const connected = await db.connectMongo();
+  if (!connected) {
+    throw new Error('MongoDB is unavailable. Start MongoDB or set MONGODB_URI to store product reviews.');
+  }
+  return true;
+}
 
 exports.getReviews = async (productId) => {
-  if (db.isMongoActive()) {
-    return await ReviewModel.find({ productId }).sort({ createdAt: -1 }).lean();
-  } else {
-    return memoryReviews[productId] || [];
-  }
+  await ensureMongoConnection();
+  return await ReviewModel.find({ productId }).sort({ createdAt: -1 }).lean();
 };
 
 exports.createReview = async (review) => {
-  if (db.isMongoActive()) {
-    const r = new ReviewModel(review);
-    await r.save();
-    return r.toObject();
-  } else {
-    const pid = review.productId;
-    if (!memoryReviews[pid]) memoryReviews[pid] = [];
-    memoryReviews[pid].unshift(review);
-    return review;
-  }
+  await ensureMongoConnection();
+  const r = new ReviewModel(review);
+  await r.save();
+  return r.toObject();
 };
