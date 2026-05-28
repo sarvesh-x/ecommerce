@@ -6,7 +6,9 @@ let user = JSON.parse(localStorage.getItem('fh_user')) || null;
 let activeGenderFilter = 'all';
 let activeCategoryFilter = '';
 let activeSearchQuery = '';
-
+import dns from "dns";
+// Force Node.js to use reliable public DNS servers
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 // DOM Elements
 const body = document.body;
 const toastNotification = document.getElementById('toastNotification');
