@@ -28,11 +28,14 @@ const wishlistCount = document.getElementById('wishlistCount');
 const closeAuthModal = document.getElementById('closeAuthModal');
 const loginCard = document.getElementById('loginCard');
 const signupCard = document.getElementById('signupCard');
+const editAccountCard = document.getElementById('editAccountCard');
 const toSignupLink = document.getElementById('toSignupLink');
 const toLoginLink = document.getElementById('toLoginLink');
 const loginForm = document.getElementById('loginForm');
 const signupForm = document.getElementById('signupForm');
+const editAccountForm = document.getElementById('editAccountForm');
 const logoutBtn = document.getElementById('logoutBtn');
+const editAccountBtn = document.getElementById('editAccountBtn');
 
 // Cart Drawer DOM
 const cartDrawer = document.getElementById('cartDrawer');
@@ -430,9 +433,13 @@ function openAuth(card = 'login') {
   if (card === 'login') {
     loginCard.style.display = 'block';
     signupCard.style.display = 'none';
-  } else {
+  } else if (card === 'signup') {
     loginCard.style.display = 'none';
     signupCard.style.display = 'block';
+  } else if (card === 'edit-account') {
+    loginCard.style.display = 'none';
+    signupCard.style.display = 'none';
+    editAccountCard.style.display = 'block';
   }
 }
 
@@ -501,6 +508,40 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
+editAccountForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('editAccountName').value;
+  const email = document.getElementById('editAccountEmail').value;
+  const submitBtn = editAccountForm.querySelector('button[type="submit"]');
+  setButtonLoading(submitBtn, true, 'Updating...');
+
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/edit-account`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ name, email })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      showToast(data.error || 'Failed to update account.');
+      return;
+    }
+
+    user = data.user;
+    localStorage.setItem('fh_user', JSON.stringify(user));
+    updateAuthUI();
+    showToast(`Account updated successfully, ${user.name}!`);
+  } catch (error) {
+    showToast('Server error. Please try again.');
+  } finally {
+    setButtonLoading(submitBtn, false);
+  }
+});
+
 // Signup Form Submit
 signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -555,6 +596,10 @@ logoutBtn.addEventListener('click', () => {
   renderCatalogGrid();
   window.location.hash = '#home';
   showToast('Logged out successfully.');
+});
+
+editAccountBtn.addEventListener('click', () => {
+  openAuth('edit-account');
 });
 
 // Trigger auth modal from custom links

@@ -109,3 +109,37 @@ exports.getProfile = async (req, res) => {
     return res.status(500).json({ error: 'Unable to retrieve profile' });
   }
 };
+
+// Edit Account (name, email)
+exports.editAccount = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    if (!name && !email) {
+      return res.status(400).json({ error: 'Name or email required' });
+    }
+    const userId = req.user.userId;
+    // Check email uniqueness if email provided
+    if (email) {
+      const existing = await userService.getUserByEmail(email.toLowerCase());
+      if (existing && existing.userId !== userId) {
+        return res.status(409).json({ error: 'Email already in use' });
+      }
+    }
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email.toLowerCase();
+    const updatedUser = await userService.updateUser(userId, updates);
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    return res.json({
+      user: {
+        userId: updatedUser.userId,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: 'Unable to update account' });
+  }
+};

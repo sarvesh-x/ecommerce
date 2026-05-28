@@ -48,3 +48,23 @@ exports.createUser = async (user) => {
     throw error;
   }
 };
+
+// Update user profile (name, email) by userId
+exports.updateUser = async (userId, updates) => {
+  try {
+    await ensureMongoConnection();
+    const updatedUser = await User.findOneAndUpdate(
+      { userId },
+      { $set: updates },
+      { new: true }
+    ).lean();
+    return toApiUser(updatedUser);
+  } catch (error) {
+    if (error.code === 11000) {
+      const err = new Error('DuplicateEmail');
+      err.code = 'DUPLICATE_EMAIL';
+      throw err;
+    }
+    throw error;
+  }
+};

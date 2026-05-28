@@ -1913,6 +1913,23 @@ body.dark-mode .product-card:hover {
   color: #ffffff;
 }
 
+.edit-account-btn {
+  background-color: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-account-btn:hover {
+  background-color: var(--accent);
+  color: #ffffff;
+}
+
 .order-history-section h2 {
   font-size: 1.4rem;
   margin-bottom: 20px;
