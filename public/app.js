@@ -395,7 +395,7 @@ function renderHomeCarousel() {
 const carouselTrack = document.getElementById('carouselTrack');
 const carouselPrev = document.getElementById('carouselPrev');
 const carouselNext = document.getElementById('carouselNext');
-const scrollAmount = 324;
+const scrollAmount = 290;
 
 if (carouselPrev && carouselNext && carouselTrack) {
   carouselPrev.addEventListener('click', () => {
