@@ -12,7 +12,7 @@
   const COLUMNS = [
     {
       heading: 'Shop',
-      pages: ['Shop All', "Men's Collection", "Women's Collection"],
+      pages: ['Shop All', 'Completes Collection', 'Decks Collection', 'Parts & Hardware'],
     },
     {
       heading: 'Discover',

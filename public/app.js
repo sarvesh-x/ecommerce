@@ -6,9 +6,7 @@ let user = JSON.parse(localStorage.getItem('fh_user')) || null;
 let activeGenderFilter = 'all';
 let activeCategoryFilter = '';
 let activeSearchQuery = '';
-import dns from "dns";
-// Force Node.js to use reliable public DNS servers
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 // DOM Elements
 const body = document.body;
 const toastNotification = document.getElementById('toastNotification');
@@ -56,12 +54,22 @@ const closeProductDetailModal = document.getElementById('closeProductDetailModal
 const modalProductImage = document.getElementById('modalProductImage');
 const modalProductGender = document.getElementById('modalProductGender');
 const modalProductName = document.getElementById('modalProductName');
+const modalProductBrand = document.getElementById('modalProductBrand');
+const modalProductSku = document.getElementById('modalProductSku');
+const modalProductAvailability = document.getElementById('modalProductAvailability');
 const modalProductRatingStars = document.getElementById('modalProductRatingStars');
 const modalProductRatingCount = document.getElementById('modalProductRatingCount');
 const modalProductPrice = document.getElementById('modalProductPrice');
+const modalProductOriginalPrice = document.getElementById('modalProductOriginalPrice');
+const modalProductDiscount = document.getElementById('modalProductDiscount');
 const modalProductDescription = document.getElementById('modalProductDescription');
+const modalProductStock = document.getElementById('modalProductStock');
+const modalProductRawCategory = document.getElementById('modalProductRawCategory');
+const modalProductSubCategory = document.getElementById('modalProductSubCategory');
 const modalProductSizes = document.getElementById('modalProductSizes');
 const modalProductColors = document.getElementById('modalProductColors');
+const modalProductSpecs = document.getElementById('modalProductSpecs');
+const modalProductTags = document.getElementById('modalProductTags');
 const modalAddToBagBtn = document.getElementById('modalAddToBagBtn');
 let currentDetailProduct = null;
 let selectedSize = '';
@@ -85,6 +93,12 @@ function showToast(message, duration = 3000) {
 // ==========================================
 function handleRoute() {
   const hash = window.location.hash || '#home';
+  const legalAnchor = document.querySelector(hash);
+
+  if (hash === '#mainContent') {
+    document.getElementById('mainContent')?.focus();
+    return;
+  }
 
   // Hide all sections
   pageSections.forEach(section => {
@@ -98,29 +112,30 @@ function handleRoute() {
   // Route matches
   if (hash.startsWith('#products')) {
     const targetSection = document.getElementById('page-products');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
 
     // Read parameters from link context if applicable
-    const activeLink = document.querySelector(`.nav-link[href="#products"]`);
+    const activeLink = document.querySelector(`.nav-link[href="#products"][data-gender="${activeGenderFilter}"]`)
+      || document.querySelector(`.nav-link[href="#products"]`);
     if (activeLink) activeLink.classList.add('active');
 
     loadProductsPage();
   } else if (hash === '#offers') {
     const targetSection = document.getElementById('page-offers');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
-    document.querySelector('.nav-link[href="#offers"]').classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
+    document.querySelector('.nav-link[href="#offers"]')?.classList.add('active');
   } else if (hash === '#about') {
     const targetSection = document.getElementById('page-about');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
-    document.querySelector('.nav-link[href="#about"]').classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
+    document.querySelector('.nav-link[href="#about"]')?.classList.add('active');
   } else if (hash === '#contact') {
     const targetSection = document.getElementById('page-contact');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
-    document.querySelector('.nav-link[href="#contact"]').classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
+    document.querySelector('.nav-link[href="#contact"]')?.classList.add('active');
   } else if (hash === '#profile') {
     if (!token) {
       window.location.hash = '#home';
@@ -129,37 +144,89 @@ function handleRoute() {
       return;
     }
     const targetSection = document.getElementById('page-profile');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
     loadProfilePage();
+  } else if (hash === '#cart') {
+    const targetSection = document.getElementById('page-home');
+    if (targetSection) showSection(targetSection);
+    document.querySelector('.nav-link[href="#home"]')?.classList.add('active');
+    renderHomeCarousel();
+    openCartDrawer();
   } else if (hash === '#privacy') {
     const targetSection = document.getElementById('page-privacy');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
   } else if (hash === '#terms') {
     const targetSection = document.getElementById('page-terms');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
   } else if (hash === '#cookies') {
     const targetSection = document.getElementById('page-cookies');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
     initCookiePreferences();
   } else if (hash === '#accessibility') {
     const targetSection = document.getElementById('page-accessibility');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
+  } else if (legalAnchor && hash.startsWith('#priv-')) {
+    const targetSection = document.getElementById('page-privacy');
+    if (!targetSection) return;
+    showSection(targetSection);
+    legalAnchor.scrollIntoView();
+    return;
+  } else if (legalAnchor && hash.startsWith('#terms-')) {
+    const targetSection = document.getElementById('page-terms');
+    if (!targetSection) return;
+    showSection(targetSection);
+    legalAnchor.scrollIntoView();
+    return;
   } else {
     // Default Home
     const targetSection = document.getElementById('page-home');
-    targetSection.style.display = 'block';
-    targetSection.classList.add('active');
-    document.querySelector('.nav-link[href="#home"]').classList.add('active');
+    if (!targetSection) return;
+    showSection(targetSection);
+    document.querySelector('.nav-link[href="#home"]')?.classList.add('active');
     renderHomeCarousel();
   }
 
   // Scroll to top
   window.scrollTo(0, 0);
+}
+
+function showSection(section) {
+  section.style.display = 'block';
+  section.classList.add('active');
+}
+
+function truncateText(text, maxLength) {
+  const value = String(text || '');
+  return value.length > maxLength ? `${value.slice(0, maxLength - 3)}...` : value;
+}
+
+function escapeAttribute(text) {
+  return String(text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function escapeHtml(text) {
+  return escapeAttribute(text).replace(/'/g, '&#39;');
+}
+
+function escapeStyleUrl(text) {
+  return escapeAttribute(text).replace(/'/g, '%27').replace(/\)/g, '%29');
+}
+
+function formatMoney(amount, currency = 'INR') {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 0,
+  }).format(Number(amount || 0));
 }
 
 window.addEventListener('hashchange', handleRoute);
@@ -183,6 +250,17 @@ navLinks.forEach(link => {
         document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
         filterBtn.classList.add('active');
       }
+    }
+  });
+});
+
+document.querySelectorAll('a[data-gender][href="#products"]').forEach(link => {
+  link.addEventListener('click', () => {
+    activeGenderFilter = link.getAttribute('data-gender') || 'all';
+    activeCategoryFilter = '';
+
+    if (window.location.hash === '#products') {
+      handleRoute();
     }
   });
 });
@@ -366,10 +444,18 @@ async function initApp() {
   updateCartBadge();
   try {
     const response = await fetch('/api/products');
+    if (!response.ok) {
+      throw new Error(`Products API returned ${response.status}`);
+    }
     products = await response.json();
     renderHomeCarousel();
   } catch (error) {
     console.error('Failed to load products:', error);
+    products = [];
+    const grid = document.getElementById('productsGrid');
+    if (grid) {
+      grid.innerHTML = `<p class="empty-cart-msg">Unable to load products. Please check the server and try again.</p>`;
+    }
   }
 }
 
@@ -382,11 +468,11 @@ function renderHomeCarousel() {
 
   track.innerHTML = featured.map(product => `
     <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
-      <div class="carousel-card-image" style="background-image: url('${product.image || ''}')">${!product.image ? product.name : ''}</div>
-      <h3>${product.name}</h3>
-      <p>${product.description || ''}</p>
+      <div class="carousel-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">${escapeHtml(truncateText(product.name, 42))}</div>
+      <h3 title="${escapeAttribute(product.name)}">${truncateText(product.name, 34)}</h3>
+      <p title="${escapeAttribute(product.description)}">${escapeHtml(truncateText(product.description || '', 96))}</p>
       <div class="carousel-card-footer">
-        <span class="carousel-card-price">$${product.price.toFixed(2)}</span>
+        <span class="carousel-card-price">${formatMoney(product.price, product.currency)}</span>
         <button class="carousel-card-btn" onclick="event.stopPropagation(); viewProductDetail('${product.id}')">+</button>
       </div>
     </div>
@@ -435,14 +521,14 @@ function renderCatalogGrid() {
   let filtered = [...products];
 
   if (activeGenderFilter && activeGenderFilter !== 'all') {
-    filtered = filtered.filter(p => p.gender === activeGenderFilter);
-    document.getElementById('catalogTitle').textContent = `${activeGenderFilter}'s Premium Essentials`;
+    filtered = filtered.filter(p => !p.gender || p.gender === activeGenderFilter);
+    document.getElementById('catalogTitle').textContent = `${activeGenderFilter}`;
   } else {
-    document.getElementById('catalogTitle').textContent = 'Shop All Products';
+    document.getElementById('catalogTitle').textContent = 'Shop All Gear';
   }
 
   if (activeCategoryFilter) {
-    filtered = filtered.filter(p => p.category === activeCategoryFilter);
+    filtered = filtered.filter(p => !p.category || p.category === activeCategoryFilter);
     document.getElementById('catalogTitle').textContent = `${activeCategoryFilter} Collection`;
   }
 
@@ -450,7 +536,7 @@ function renderCatalogGrid() {
     const q = activeSearchQuery.toLowerCase();
     filtered = filtered.filter(p =>
       p.name.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q)
+      (p.description || '').toLowerCase().includes(q)
     );
   }
 
@@ -468,20 +554,20 @@ function renderCatalogGrid() {
   }
 
   if (filtered.length === 0) {
-    grid.innerHTML = `<p class="empty-cart-msg">No premium apparel matches your filters.</p>`;
+    grid.innerHTML = `<p class="empty-cart-msg">No premium skateboard gear matches your filters.</p>`;
     return;
   }
 
   grid.innerHTML = filtered.map(product => `
     <div class="product-card" onclick="viewProductDetail('${product.id}')">
-      <div class="product-card-image" style="background-image: url('${product.image || ''}')">
-        ${!product.image ? product.name : ''}
+      <div class="product-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">
+        ${escapeHtml(product.name)}
       </div>
-      <span class="product-card-badge">${product.gender.toUpperCase()} / ${product.category.toUpperCase()}</span>
-      <h3>${product.name}</h3>
-      <p class="product-card-desc">${product.description || ''}</p>
+      <span class="product-card-badge">${escapeHtml((product.category || 'Gear').toUpperCase())}</span>
+      <h3>${escapeHtml(product.name)}</h3>
+      <p class="product-card-desc">${escapeHtml(product.description || '')}</p>
       <div class="product-card-meta">
-        <span class="product-card-price">$${product.price.toFixed(2)}</span>
+        <span class="product-card-price">${formatMoney(product.price, product.currency)}</span>
         <span class="product-card-rating">★ ${product.rating?.rate || '4.5'}</span>
       </div>
     </div>
@@ -552,39 +638,99 @@ function viewProductDetail(id) {
   selectedColor = product.colors && product.colors.length > 0 ? product.colors[0] : 'Standard';
 
   modalProductName.textContent = product.name;
-  modalProductGender.textContent = `${product.gender.toUpperCase()} / ${product.category.toUpperCase()}`;
-  modalProductPrice.textContent = `$${product.price.toFixed(2)}`;
-  modalProductDescription.textContent = product.description || 'Crafted with premium materials for maximum durability and visual comfort.';
-  modalProductRatingStars.textContent = '★'.repeat(Math.round(product.rating?.rate || 4.5)) + '☆'.repeat(5 - Math.round(product.rating?.rate || 4.5));
+  modalProductGender.textContent = `${(product.category || 'Gear').toUpperCase()}`;
+  modalProductBrand.textContent = product.brand?.name || 'Independent brand';
+  modalProductSku.textContent = product.sku ? `SKU ${product.sku}` : `ID ${product.productId || product.id}`;
+  modalProductAvailability.textContent = (product.availability || 'in-stock').replace(/-/g, ' ');
+  modalProductAvailability.className = `availability-pill ${(product.availability || 'in-stock').toLowerCase()}`;
+  modalProductPrice.textContent = formatMoney(product.price, product.currency);
+  modalProductDescription.textContent = product.fullDescription || product.description || 'Crafted with premium materials for maximum performance, pop, and durability.';
+  const originalPrice = Number(product.originalPrice || product.price);
+  const salePrice = Number(product.price || 0);
+  if (originalPrice > salePrice) {
+    modalProductOriginalPrice.textContent = formatMoney(originalPrice, product.currency);
+    modalProductDiscount.hidden = false;
+    modalProductDiscount.textContent = product.discountPercentage ? `${product.discountPercentage}% off` : 'Sale';
+  } else {
+    modalProductOriginalPrice.textContent = '';
+    modalProductDiscount.hidden = true;
+  }
+  const ratingValue = Math.max(0, Math.min(5, Math.round(product.rating?.rate || product.rating?.average || 4.5)));
+  modalProductRatingStars.textContent = '★'.repeat(ratingValue) + '☆'.repeat(5 - ratingValue);
   modalProductRatingCount.textContent = `(${product.rating?.count || 24} client reviews)`;
+  modalProductStock.textContent = `${product.availableStock ?? product.inventory ?? 0}`;
+  modalProductRawCategory.textContent = product.rawCategory || product.category || 'Gear';
+  modalProductSubCategory.textContent = product.subCategory || 'General';
 
   if (product.image) {
     modalProductImage.style.backgroundImage = `url('${product.image}')`;
-    modalProductImage.textContent = '';
+    modalProductImage.textContent = product.name;
   } else {
     modalProductImage.style.backgroundImage = 'none';
     modalProductImage.textContent = product.name;
   }
 
-  // Render Sizes
   const sizeList = product.sizes || ['S', 'M', 'L', 'XL'];
-  modalProductSizes.innerHTML = sizeList.map(s => `
-    <span class="size-chip ${s === selectedSize ? 'selected' : ''}" onclick="selectProductSize('${s}')">${s}</span>
-  `).join('');
-
-  // Render Colors
   const colorList = product.colors || ['Black', 'White', 'Navy'];
-  modalProductColors.innerHTML = colorList.map(c => `
-    <span class="color-chip ${c === selectedColor ? 'selected' : ''}" onclick="selectProductColor('${c}')">${c}</span>
-  `).join('');
+
+  renderChoiceChips(modalProductSizes, sizeList, selectedSize, 'size-chip', (size) => {
+    selectedSize = size;
+  });
+
+  renderChoiceChips(modalProductColors, colorList, selectedColor, 'color-chip', (color) => {
+    selectedColor = color;
+  });
+
+  renderProductSpecs(product.specifications || {});
+  renderProductTags(product.tags || []);
 
   productDetailModal.removeAttribute('hidden');
 }
 
+function renderProductSpecs(specifications) {
+  const entries = Object.entries(specifications || {}).filter(([, value]) => value != null && value !== '');
+  if (entries.length === 0) {
+    modalProductSpecs.innerHTML = '<div class="empty-detail-note">No specifications listed.</div>';
+    return;
+  }
+
+  modalProductSpecs.innerHTML = entries.map(([key, value]) => `
+    <div class="spec-row">
+      <dt>${escapeHtml(key.replace(/([A-Z])/g, ' $1').trim())}</dt>
+      <dd>${escapeHtml(value)}</dd>
+    </div>
+  `).join('');
+}
+
+function renderProductTags(tags) {
+  if (!tags.length) {
+    modalProductTags.innerHTML = '<span class="empty-detail-note">No tags listed.</span>';
+    return;
+  }
+
+  modalProductTags.innerHTML = tags.map(tag => `<span>${escapeHtml(tag)}</span>`).join('');
+}
+
+function renderChoiceChips(container, values, selectedValue, className, onSelect) {
+  container.innerHTML = '';
+
+  values.forEach((value) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = `${className}${value === selectedValue ? ' selected' : ''}`;
+    chip.textContent = value;
+    chip.addEventListener('click', () => {
+      onSelect(value);
+      container.querySelectorAll(`.${className}`).forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+    });
+    container.appendChild(chip);
+  });
+}
+
 window.selectProductSize = (size) => {
   selectedSize = size;
-  const chips = modalProductSizes.querySelectorAll('.size-chip');
-  chips.forEach(c => {
+  modalProductSizes.querySelectorAll('.size-chip').forEach(c => {
     c.classList.remove('selected');
     if (c.textContent === size) c.classList.add('selected');
   });
@@ -592,8 +738,7 @@ window.selectProductSize = (size) => {
 
 window.selectProductColor = (color) => {
   selectedColor = color;
-  const chips = modalProductColors.querySelectorAll('.color-chip');
-  chips.forEach(c => {
+  modalProductColors.querySelectorAll('.color-chip').forEach(c => {
     c.classList.remove('selected');
     if (c.textContent === color) c.classList.add('selected');
   });
@@ -621,6 +766,7 @@ modalAddToBagBtn.addEventListener('click', () => {
       id: currentDetailProduct.id,
       name: currentDetailProduct.name,
       price: currentDetailProduct.price,
+      currency: currentDetailProduct.currency,
       image: currentDetailProduct.image,
       size: selectedSize,
       color: selectedColor,
@@ -671,13 +817,14 @@ function resetCheckoutViewState() {
 function renderCartDrawer() {
   if (cart.length === 0) {
     cartItemsContainer.innerHTML = `<p class="empty-cart-msg">Your bag is empty.</p>`;
-    cartSubtotal.textContent = '$0.00';
+    cartSubtotal.textContent = formatMoney(0, 'INR');
     checkoutBtn.disabled = true;
     return;
   }
 
   checkoutBtn.disabled = false;
   let total = 0;
+  const currency = cart[0]?.currency || 'INR';
   cartItemsContainer.innerHTML = cart.map((item, index) => {
     const itemTotal = item.price * item.quantity;
     total += itemTotal;
@@ -698,12 +845,12 @@ function renderCartDrawer() {
             <button class="remove-item-btn" onclick="removeCartItem(${index})">Remove</button>
           </div>
         </div>
-        <span class="cart-item-price">$${itemTotal.toFixed(2)}</span>
+        <span class="cart-item-price">${formatMoney(itemTotal, item.currency || currency)}</span>
       </div>
     `;
   }).join('');
 
-  cartSubtotal.textContent = `$${total.toFixed(2)}`;
+  cartSubtotal.textContent = formatMoney(total, currency);
 }
 
 window.updateCartQty = (index, change) => {
@@ -795,7 +942,7 @@ placeOrderBtn.addEventListener('click', async () => {
         key: razorpayOrder.key || 'rzp_test_mockkey', // In case key is passed
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
-        name: 'Fashion House',
+        name: 'Skateboard Store',
         description: `Order Purchase - ${primaryItem.name}`,
         order_id: razorpayOrder.id,
         handler: async function (rzpResponse) {

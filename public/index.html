@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FASHION HOUSE</title>
+  <title>Skateboard Store</title>
   <!-- Google Fonts: Outfit (For Headings) and Inter (For UI/Body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,14 +27,15 @@
   <header class="site-header">
     <div class="header-container">
       <div class="logo">
-        <a href="#home">Fashion House</a>
+        <a href="#home">Skateboard Store</a>
       </div>
 
       <nav class="nav-primary">
         <a href="#home" class="nav-link active" data-page="home">Home</a>
         <a href="#products" class="nav-link" data-page="products" data-gender="all">Shop All</a>
-        <a href="#products" class="nav-link" data-page="products" data-gender="Men">Men</a>
-        <a href="#products" class="nav-link" data-page="products" data-gender="Women">Women</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="Completes">Completes</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="Decks">Decks</a>
+        <a href="#products" class="nav-link" data-page="products" data-gender="Parts">Parts & Hardware</a>
         <a href="#offers" class="nav-link" data-page="offers">Offers</a>
         <a href="#about" class="nav-link" data-page="about">About</a>
         <a href="#contact" class="nav-link" data-page="contact">Contact</a>
@@ -88,7 +89,7 @@
     <!-- Dropdown Search Modal -->
     <div id="searchModal" class="search-modal" hidden>
       <div class="search-content">
-        <input type="text" id="searchInput" placeholder="Search premium apparel..." />
+        <input type="text" id="searchInput" placeholder="Search skateboard gear..." />
         <button class="close-btn" id="closeSearch">✕</button>
       </div>
     </div>
@@ -102,7 +103,7 @@
       <!-- Login Card -->
       <div id="loginCard">
         <h2>Welcome Back</h2>
-        <p class="modal-subtitle">Sign in to your Fashion House account.</p>
+        <p class="modal-subtitle">Sign in to your Skateboard Store account.</p>
         <form id="loginForm" class="modal-form">
           <div class="form-group">
             <label for="loginEmail">Email Address</label>
@@ -120,7 +121,7 @@
       <!-- Signup Card -->
       <div id="signupCard" style="display: none;">
         <h2>Create Account</h2>
-        <p class="modal-subtitle">Join us for a premium shopping experience.</p>
+        <p class="modal-subtitle">Join us for a premium skateboarding experience.</p>
         <form id="signupForm" class="modal-form">
           <div class="form-group">
             <label for="signupName">Full Name</label>
@@ -195,14 +196,38 @@
           <div id="modalProductImage" class="modal-product-image">PRODUCT IMAGE</div>
         </div>
         <div class="product-detail-info-sec">
-          <span id="modalProductGender" class="product-badge">UNISEX</span>
+          <span id="modalProductGender" class="product-badge">SKATEBOARDING GEAR</span>
           <h2 id="modalProductName">Product Name</h2>
+          <div class="product-detail-meta-row">
+            <span id="modalProductBrand">Brand</span>
+            <span id="modalProductSku">SKU</span>
+            <span id="modalProductAvailability">Availability</span>
+          </div>
           <div class="rating-container">
             <span id="modalProductRatingStars">★★★★★</span>
             <span id="modalProductRatingCount" class="rating-count">(0 reviews)</span>
           </div>
-          <p id="modalProductPrice" class="detail-price">$0.00</p>
+          <div class="detail-price-row">
+            <p id="modalProductPrice" class="detail-price">$0.00</p>
+            <p id="modalProductOriginalPrice" class="detail-original-price"></p>
+            <span id="modalProductDiscount" class="detail-discount-badge" hidden></span>
+          </div>
           <p id="modalProductDescription" class="detail-desc">No description available.</p>
+
+          <div class="detail-stock-strip">
+            <div>
+              <span>Available</span>
+              <strong id="modalProductStock">0</strong>
+            </div>
+            <div>
+              <span>Category</span>
+              <strong id="modalProductRawCategory">Gear</strong>
+            </div>
+            <div>
+              <span>Subcategory</span>
+              <strong id="modalProductSubCategory">Street</strong>
+            </div>
+          </div>
 
           <div class="detail-options">
             <div class="options-group">
@@ -217,6 +242,17 @@
               <div class="color-chips" id="modalProductColors">
                 <!-- Color elements injected here -->
               </div>
+            </div>
+          </div>
+
+          <div class="detail-panels">
+            <div class="detail-panel">
+              <h3>Specifications</h3>
+              <dl id="modalProductSpecs" class="spec-list"></dl>
+            </div>
+            <div class="detail-panel">
+              <h3>Tags</h3>
+              <div id="modalProductTags" class="detail-tags"></div>
             </div>
           </div>
 
@@ -235,13 +271,12 @@
       <section class="hero-banner main-hero">
         <div class="hero-bg-overlay"></div>
         <div class="hero-text-wrapper">
-          <span class="hero-subtitle">NEW ARRIVALS 2026</span>
-          <h1 class="hero-title">Summer Collection</h1>
-          <p class="hero-description">Clean cuts, soft pastel tones, and highly breathable fabrics crafted for
-            effortless warm-weather style.</p>
+          <span class="hero-subtitle">NEW DESIGNS 2026</span>
+          <h1 class="hero-title">Premium Pro Completes</h1>
+          <p class="hero-description">7-ply hard rock maple, high-rebound wheels, and ultra-durable trucks. Crafted for maximum pop and smooth street sessions.</p>
           <div class="hero-buttons">
-            <a href="#products" class="hero-btn primary-hero-btn" data-gender="Women">Shop Women</a>
-            <a href="#products" class="hero-btn secondary-hero-btn" data-gender="Men">Shop Men</a>
+            <a href="#products" class="hero-btn primary-hero-btn" data-gender="Completes">Shop Completes</a>
+            <a href="#products" class="hero-btn secondary-hero-btn" data-gender="Decks">Shop Decks</a>
           </div>
         </div>
 
@@ -251,12 +286,11 @@
       <section class="hero-banner secondary-hero">
         <div class="hero-bg-overlay"></div>
         <div class="hero-text-wrapper">
-          <span class="hero-subtitle">ESSENTIAL DENIM</span>
-          <h1 class="hero-title">Recycled Denim. Built for Life.</h1>
-          <p class="hero-description">Classic indigo shades washed with zero harsh chemicals. Structured, durable, and
-            styled for comfort.</p>
+          <span class="hero-subtitle">PRO DECKS</span>
+          <h1 class="hero-title">Baker, Toy Machine & Primitive</h1>
+          <p class="hero-description">Authentic deck shapes, iconic graphic collaborations, and deep concaves built to withstand heavy impacts.</p>
           <div class="hero-buttons">
-            <a href="#products" class="hero-btn white-hero-btn" data-gender="all">Explore Denim Collection</a>
+            <a href="#products" class="hero-btn white-hero-btn" data-gender="Decks">Explore Decks Collection</a>
           </div>
         </div>
       </section>
@@ -269,8 +303,8 @@
             <h2>Featured Products</h2>
           </div>
           <div class="carousel-controls">
-            <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">✕</button>
-            <button class="carousel-btn next" id="carouselNext" aria-label="Next">❯</button>
+            <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous">←</button>
+            <button class="carousel-btn next" id="carouselNext" aria-label="Next">→</button>
           </div>
         </div>
 
@@ -284,15 +318,14 @@
       <!-- Video Section (Apple Style Cinematic Promo) -->
       <section class="video-section">
         <div class="video-overlay-text">
-          <span class="video-subtitle">CRAFTED FOR MOTION</span>
-          <h2>A Wardrobe That Moves With You</h2>
-          <p>Every seam, every stitch, engineered with precision. Our 2026 line reimagines comfort for active, everyday
-            living.</p>
+          <span class="video-subtitle">BUILT FOR THE STREET</span>
+          <h2>Shred Without Limits</h2>
+          <p>Every pop, every grind, engineered with absolute precision. Our 2026 gear line reimagines street performance for daily sessions.</p>
           <button id="playVideoButton" class="play-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
-            Watch the Cinematic Edit
+            Watch the Skate Edit
           </button>
         </div>
         <!-- Premium styled background element mimicking video placeholder -->
@@ -305,16 +338,17 @@
       <div class="catalog-container">
         <!-- Catalog Header & Breadcrumb -->
         <div class="catalog-header">
-          <h1 id="catalogTitle">Shop All Products</h1>
-          <p id="catalogSubtitle">Discover refined, comfortable silhouettes made for your rotation.</p>
+          <h1 id="catalogTitle">Shop All Gear</h1>
+          <p id="catalogSubtitle">Discover premium hardware, completes, and accessories built for your rotation.</p>
         </div>
 
         <!-- Filters Bar -->
         <div class="catalog-filters-bar">
           <div class="filters-left">
             <button class="filter-tab active" data-filter-gender="all">All</button>
-            <button class="filter-tab" data-filter-gender="Men">Men</button>
-            <button class="filter-tab" data-filter-gender="Women">Women</button>
+            <button class="filter-tab" data-filter-gender="Completes">Completes</button>
+            <button class="filter-tab" data-filter-gender="Decks">Decks</button>
+            <button class="filter-tab" data-filter-gender="Parts">Parts & Hardware</button>
             <button class="filter-tab" data-filter-category="Accessories">Accessories</button>
           </div>
           <div class="filters-right">
@@ -368,12 +402,11 @@
           <!-- Offer Card 1 -->
           <div class="offer-card premium-offer-card">
             <div class="offer-badge">LIMITED TIME</div>
-            <h3>Seasonal Refresh Bundle</h3>
-            <p>Purchase any Outerwear piece and get a classic Cotton T-Shirt at 50% off. Discount applied automatically
-              during checkout.</p>
+            <h3>Complete Build Bundle</h3>
+            <p>Purchase any Skateboard Deck and get premium high-grip Mob Griptape at 50% off. Discount applied automatically during checkout.</p>
             <div class="offer-footer">
               <span class="promo-code">AUTO-APPLIED</span>
-              <a href="#products" class="primary-btn">Shop Outerwear</a>
+              <a href="#products" class="primary-btn">Shop Decks</a>
             </div>
           </div>
 
@@ -381,8 +414,7 @@
           <div class="offer-card">
             <div class="offer-badge">FIRST PURCHASE</div>
             <h3>Welcome Privilege</h3>
-            <p>Create a Fashion House account today and secure 10% off your first checkout. Code emailed directly after
-              signup verification.</p>
+            <p>Create a Skateboard Store account today and secure 10% off your first checkout. Code emailed directly after signup verification.</p>
             <div class="offer-footer">
               <span class="promo-code">WELCOME10</span>
               <a href="#home" class="secondary-btn to-auth-trigger">Sign Up Now</a>
@@ -393,8 +425,7 @@
           <div class="offer-card">
             <div class="offer-badge">DELIVERY</div>
             <h3>Complimentary Express Delivery</h3>
-            <p>Every order above $100 enjoys complimentary express shipping. Delivery guaranteed within 2-3 business
-              days.</p>
+            <p>Every order above $100 enjoys complimentary express shipping. Delivery guaranteed within 2-3 business days.</p>
             <div class="offer-footer">
               <span class="promo-code">COMPLIMENTARY</span>
               <a href="#products" class="secondary-btn">Browse Shop</a>
@@ -409,36 +440,33 @@
       <div class="standard-container about-container">
         <div class="about-hero">
           <span class="tagline">OUR PHILOSOPHY</span>
-          <h1>Minimalist Aesthetics. Durable Engineering.</h1>
-          <p>We believe that garments should be designed with the same care, simplicity, and structural integrity as
-            premium hardware.</p>
+          <h1>Premium Skate Hardgoods. Durable Engineering.</h1>
+          <p>We believe that skateboards should be designed with the same care, simplicity, and structural integrity as fine precision hardware.</p>
         </div>
 
         <div class="about-grid">
           <div class="about-block">
-            <h3>Designed for Lifespan</h3>
-            <p>Every seam is double-locked. Buttons are reinforced. We run intense wear tests on all prototypes to
-              ensure that our styles last seasons, not months. We prioritize longevity over transient trends.</p>
+            <h3>Designed for High Impact</h3>
+            <p>Every deck is constructed with 7 layers of premium North American maple. We run intense stress tests on all batches to ensure that our boards maintain their pop and resist chipping and delamination.</p>
           </div>
           <div class="about-block">
-            <h3>Ethical Sourcing</h3>
-            <p>We partner exclusively with clean, certified manufacturing hubs. Our textiles are woven from
-              GOTS-certified organic cotton, clean flax linen, and recycled polyester blends.</p>
+            <h3>Sourced for Shredding</h3>
+            <p>We partner exclusively with top-tier skateboard manufacturers who use cold-press molding techniques, eco-friendly water-based glues, and premium silicon-carbide abrasives.</p>
           </div>
         </div>
 
         <div class="about-stats">
           <div class="stat-box">
             <strong>100%</strong>
-            <span>Organic & Recycled Fabrics</span>
+            <span>Premium Canadian Maple Decks</span>
           </div>
           <div class="stat-box">
             <strong>Zero</strong>
-            <span>Harsh Dyes or Chemicals</span>
+            <span>Weak Polyurethane Blends</span>
           </div>
           <div class="stat-box">
             <strong>10+</strong>
-            <span>Years Garment Design Integrity</span>
+            <span>Years Core Skate Hardware Experience</span>
           </div>
         </div>
       </div>
@@ -462,11 +490,11 @@
             </div>
             <div class="info-card">
               <h4>Email Inquiry</h4>
-              <p>client.services@fashionhouse.com</p>
+              <p>support@skateboardstore.com</p>
             </div>
             <div class="info-card">
               <h4>Call Support</h4>
-              <p>+1 (800) 555-0199 (Toll-Free)</p>
+              <p>+1 (800) 555-SKATE (Toll-Free)</p>
             </div>
           </div>
 
@@ -539,7 +567,7 @@
         <div class="legal-body">
           <section class="legal-section" id="priv-collect">
             <h2>1. Information We Collect</h2>
-            <p>When you shop with Fashion House, we collect information you provide directly:</p>
+            <p>When you shop with Skateboard Store, we collect information you provide directly:</p>
             <ul>
               <li><strong>Account data:</strong> Name, email address, and password when you register.</li>
               <li><strong>Order data:</strong> Shipping address, purchase history, and payment identifiers (we do not
@@ -567,7 +595,7 @@
 
           <section class="legal-section" id="priv-share">
             <h2>3. Information Sharing</h2>
-            <p>Fashion House does not sell your personal data. We share limited data only with:</p>
+            <p>Skateboard Store does not sell your personal data. We share limited data only with:</p>
             <ul>
               <li><strong>Payment processors</strong> (Razorpay) to securely complete transactions.</li>
               <li><strong>Shipping partners</strong> to deliver your orders.</li>
@@ -607,14 +635,14 @@
               <li>Withdraw consent at any time without affecting past lawful processing.</li>
             </ul>
             <p>To exercise any of these rights, contact us at <a
-                href="mailto:privacy@fashionhouse.com">privacy@fashionhouse.com</a>.</p>
+                href="mailto:privacy@skateboardstore.com">privacy@skateboardstore.com</a>.</p>
           </section>
 
           <section class="legal-section" id="priv-contact">
             <h2>7. Contact Us</h2>
-            <p>Fashion House Privacy Team<br>
-              123 Thread Lane, New York, NY 10001<br>
-              <a href="mailto:privacy@fashionhouse.com">privacy@fashionhouse.com</a>
+            <p>Skateboard Store Privacy Team<br>
+              123 Maple Street, Oceanside, CA 92054<br>
+              <a href="mailto:privacy@skateboardstore.com">privacy@skateboardstore.com</a>
             </p>
           </section>
         </div>
@@ -646,7 +674,7 @@
         <div class="legal-body">
           <section class="legal-section" id="terms-acceptance">
             <h2>1. Acceptance of Terms</h2>
-            <p>By accessing or using the Fashion House website ("Site"), you agree to be bound by these Terms of Use and
+            <p>By accessing or using the Skateboard Store website ("Site"), you agree to be bound by these Terms of Use and
               our Privacy Policy. If you do not agree with any part of these terms, you must discontinue use of the Site
               immediately. We may update these terms from time to time; continued use of the Site constitutes acceptance
               of any changes.</p>
@@ -660,7 +688,7 @@
               <li>All activity that occurs under your account.</li>
               <li>Notifying us immediately of any unauthorised account use.</li>
             </ul>
-            <p>Fashion House reserves the right to suspend or terminate accounts that violate these terms.</p>
+            <p>Skateboard Store reserves the right to suspend or terminate accounts that violate these terms.</p>
           </section>
 
           <section class="legal-section" id="terms-products">
@@ -668,13 +696,13 @@
             <p>All product descriptions, prices, and availability are subject to change without notice. We reserve the
               right to refuse or cancel any order for any reason, including pricing errors or suspected fraud. Risk of
               loss for purchased items passes to you upon delivery to the shipping carrier.</p>
-            <p>Returns are accepted within 30 days of delivery for unworn, unwashed, original-tagged items.</p>
+            <p>Returns are accepted within 30 days of delivery for unused, unopened, original-packaged items.</p>
           </section>
 
           <section class="legal-section" id="terms-ip">
             <h2>4. Intellectual Property</h2>
             <p>All content on this Site — including logos, product photography, copy, code, and design — is the
-              exclusive property of Fashion House or its licensors and is protected by applicable copyright, trademark,
+              exclusive property of Skateboard Store or its licensors and is protected by applicable copyright, trademark,
               and trade dress laws. You may not reproduce, redistribute, or create derivative works without our prior
               written consent.</p>
           </section>
@@ -694,7 +722,7 @@
           <section class="legal-section" id="terms-disclaimer">
             <h2>6. Disclaimer &amp; Limitation of Liability</h2>
             <p>The Site is provided "as is" without warranties of any kind. To the maximum extent permitted by law,
-              Fashion House shall not be liable for indirect, incidental, or consequential damages arising out of your
+              Skateboard Store shall not be liable for indirect, incidental, or consequential damages arising out of your
               use of the Site or products. Our total liability shall not exceed the amount paid by you for the specific
               product giving rise to the claim.</p>
           </section>
@@ -714,14 +742,14 @@
       <div class="standard-container legal-container">
         <div class="legal-hero">
           <span class="tagline">ACCESSIBILITY</span>
-          <h1>Accessibility at Fashion House</h1>
+          <h1>Accessibility at Skateboard Store</h1>
           <p class="legal-meta">We're committed to making our site usable by everyone.</p>
         </div>
 
         <div class="legal-body">
           <section class="legal-section">
             <h2>Our Commitment</h2>
-            <p>Fashion House strives to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA. We
+            <p>Skateboard Store strives to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 Level AA. We
               continuously audit our interface to ensure it remains inclusive for users with disabilities.</p>
           </section>
 
@@ -795,7 +823,7 @@
             <h2>Feedback &amp; Contact</h2>
             <p>If you experience any accessibility barriers on this site, please contact us. We take all feedback
               seriously and aim to respond within 2 business days.</p>
-            <p><a href="mailto:accessibility@fashionhouse.com">accessibility@fashionhouse.com</a><br>+1 (800) 555-0199
+            <p><a href="mailto:accessibility@skateboardstore.com">accessibility@skateboardstore.com</a><br>+1 (800) 555-SKATE
               (Toll-Free)</p>
           </section>
         </div>
@@ -814,7 +842,7 @@
         <div class="legal-body">
           <section class="legal-section">
             <h2>Cookie Management</h2>
-            <p>Fashion House uses cookies to enhance your browsing experience, provide personalized content, and analyze site traffic. You can manage your cookie preferences below.</p>
+            <p>Skateboard Store uses cookies to enhance your browsing experience, provide personalized content, and analyze site traffic. You can manage your cookie preferences below.</p>
           </section>
 
           <section class="legal-section">
@@ -915,7 +943,7 @@
         <video id="cinematicVideo" width="100%" height="auto" controls preload="metadata">
           <!-- Public sample MP4 source that is always active -->
           <source
-            src="https://assets.mixkit.co/videos/preview/mixkit-fashion-woman-with-silver-makeup-wearing-black-coat-40081-large.mp4"
+            src="https://assets.mixkit.co/videos/preview/mixkit-skateboarder-doing-tricks-on-a-rail-in-a-skatepark-34241-large.mp4"
             type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -929,8 +957,8 @@
 
       <!-- Brand block -->
       <div class="footer-brand-block">
-        <span class="footer-logo">Fashion House</span>
-        <p class="footer-tagline">Minimalist aesthetics.<br>Durable engineering.</p>
+        <span class="footer-logo">Skateboard Store</span>
+        <p class="footer-tagline">Premium skate hardware.<br>Durable engineering.</p>
         <div class="footer-socials">
           <!-- Instagram -->
           <a href="#" aria-label="Instagram" class="footer-social-link">
@@ -964,7 +992,7 @@
 
     <!-- Footer Bottom Bar -->
     <div class="footer-bottom-bar">
-      <p>Copyright &copy; 2026 Fashion House. All rights reserved.</p>
+      <p>Copyright &copy; 2026 Skateboard Store. All rights reserved.</p>
     </div>
   </footer>
 

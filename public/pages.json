@@ -1,8 +1,9 @@
 [
   { "title": "Home", "href": "#home" },
   { "title": "Shop All", "href": "#products" },
-  { "title": "Men's Collection", "href": "#products", "dataGender": "Men" },
-  { "title": "Women's Collection", "href": "#products", "dataGender": "Women" },
+  { "title": "Completes Collection", "href": "#products", "dataGender": "Completes" },
+  { "title": "Decks Collection", "href": "#products", "dataGender": "Decks" },
+  { "title": "Parts & Hardware", "href": "#products", "dataGender": "Parts" },
   { "title": "Offers", "href": "#offers" },
   { "title": "About", "href": "#about" },
   { "title": "Contact", "href": "#contact" },

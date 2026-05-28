@@ -1,14 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+
+dotenv.config();
+
 const db = require('./config/db');
 
 const productsRouter = require('./routes/products');
 const ordersRouter = require('./routes/orders');
 const authRouter = require('./routes/auth');
 const paymentRouter = require('./routes/payment');
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;

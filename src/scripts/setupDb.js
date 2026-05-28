@@ -1,29 +1,26 @@
+require('dotenv').config();
+
 const db = require('../config/db');
 const productRepository = require('../repositories/mongodb/productRepository');
 const { products } = require('../data/sampleData');
-require('dotenv').config();
 
 function deriveProductMetadata(product) {
-  let category = 'Casual';
-  let gender = 'Unisex';
+  let category = 'Completes';
+  let gender = 'Completes';
   const nameLower = product.name.toLowerCase();
 
-  if (nameLower.includes('t-shirt') || nameLower.includes('shirt') || nameLower.includes('polo') || nameLower.includes('crop top')) {
-    category = 'Tops';
-  } else if (nameLower.includes('jeans') || nameLower.includes('pants') || nameLower.includes('shorts') || nameLower.includes('chino')) {
-    category = 'Bottoms';
-  } else if (nameLower.includes('jacket') || nameLower.includes('hoodie') || nameLower.includes('cardigan') || nameLower.includes('coat')) {
-    category = 'Outerwear';
-  } else if (nameLower.includes('dress')) {
-    category = 'Dresses';
-  } else if (nameLower.includes('belt') || nameLower.includes('hat') || nameLower.includes('bag')) {
+  if (nameLower.includes('complete')) {
+    category = 'Completes';
+    gender = 'Completes';
+  } else if (nameLower.includes('deck')) {
+    category = 'Decks';
+    gender = 'Decks';
+  } else if (nameLower.includes('truck') || nameLower.includes('wheels') || nameLower.includes('bearings') || nameLower.includes('grip') || nameLower.includes('helmet')) {
+    category = 'Parts';
+    gender = 'Parts';
+  } else {
     category = 'Accessories';
-  }
-
-  if (nameLower.includes('dress') || nameLower.includes('crop top') || nameLower.includes('summer dress')) {
-    gender = 'Women';
-  } else if (nameLower.includes('polo') || nameLower.includes('chino') || nameLower.includes('straight-leg jeans')) {
-    gender = 'Men';
+    gender = 'Accessories';
   }
 
   return { category, gender };
@@ -36,11 +33,8 @@ async function main() {
     process.exit(1);
   }
 
-  const existingProducts = await productRepository.getAllProducts();
-  if (existingProducts.length > 0) {
-    console.log('MongoDB already contains products. Skipping seed.');
-    process.exit(0);
-  }
+  console.log('Clearing existing products from MongoDB to ensure fresh skateboard seed...');
+  await productRepository.clearAllProducts();
 
   console.log(`Seeding ${products.length} products into MongoDB...`);
   for (const product of products) {

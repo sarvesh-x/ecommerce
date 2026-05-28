@@ -10,7 +10,9 @@ A simple Node.js ecommerce backend starter using Express and MongoDB-backed prod
 
 ## Database
 
-Set `MONGODB_URI` in `.env` to your MongoDB connection string. For local development, the default is:
+Set `MONGODB_URI` in `.env` to your MongoDB connection string. Product CRUD reads and writes the `products` collection in the `ecommerce` database.
+
+For local development, the default is:
 
 ```env
 MONGODB_URI=mongodb://localhost:27017/ecommerce
