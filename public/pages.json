@@ -1,0 +1,11 @@
+[
+  { "title": "Home", "href": "#home" },
+  { "title": "Shop All", "href": "#products" },
+  { "title": "Men's Collection", "href": "#products", "dataGender": "Men" },
+  { "title": "Women's Collection", "href": "#products", "dataGender": "Women" },
+  { "title": "Offers", "href": "#offers" },
+  { "title": "About", "href": "#about" },
+  { "title": "Contact", "href": "#contact" },
+  { "title": "Profile", "href": "#profile" },
+  { "title": "Cart", "href": "#cart" }
+]

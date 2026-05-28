@@ -1,12 +1,26 @@
 # Ecommerce Node.js Starter
 
-A simple Node.js ecommerce backend starter using Express. Includes product and order endpoints with in-memory sample data for quick development.
+A simple Node.js ecommerce backend starter using Express and MongoDB-backed product, user, and order repositories. If MongoDB is not configured or unavailable, the app falls back to in-memory data for local prototyping.
 
 ## Scripts
 
 - `npm install` - install dependencies
 - `npm run dev` - start app with auto-reload via nodemon
 - `npm start` - start app in production mode
+
+## Database
+
+Set `MONGODB_URI` in `.env` to your MongoDB connection string. For local development, the default is:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/ecommerce
+```
+
+Seed sample products with:
+
+```bash
+node src/scripts/setupDb.js
+```
 
 ## Website
 
@@ -26,11 +40,5 @@ Open the storefront in your browser at:
 
 ## Notes
 
-<<<<<<< HEAD
-This starter uses in-memory data and is ideal for prototyping. Extend it with a database, authentication, payment integration, and a real product catalog as needed.
-=======
-This starter uses in-memory data and is ideal for prototyping. Extend it with a database, authentication, payment integration, and a real product catalog as needed.
-
-
-Welcome Sagar
->>>>>>> c7299cd498e1a1d8e6cbce800b2bfce198e27def
+This starter uses MongoDB for ecommerce data and keeps a small in-memory fallback for prototyping when MongoDB is unavailable. PostgreSQL remains optional for payment and inventory support.
+hello
