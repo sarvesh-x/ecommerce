@@ -130,6 +130,23 @@ function handleRoute() {
     targetSection.style.display = 'block';
     targetSection.classList.add('active');
     loadProfilePage();
+  } else if (hash === '#privacy') {
+    const targetSection = document.getElementById('page-privacy');
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
+  } else if (hash === '#terms') {
+    const targetSection = document.getElementById('page-terms');
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
+  } else if (hash === '#cookies') {
+    const targetSection = document.getElementById('page-cookies');
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
+    initCookiePreferences();
+  } else if (hash === '#accessibility') {
+    const targetSection = document.getElementById('page-accessibility');
+    targetSection.style.display = 'block';
+    targetSection.classList.add('active');
   } else {
     // Default Home
     const targetSection = document.getElementById('page-home');
@@ -927,7 +944,131 @@ async function loadProfilePage() {
 }
 
 // ==========================================
-// 10. VIDEO CINEMATIC OVERLAY
+// 10. COOKIE PREFERENCES
+// ==========================================
+function initCookiePreferences() {
+  // Load saved preferences from localStorage
+  const savedPrefs = JSON.parse(localStorage.getItem('fh_cookiePrefs')) || {
+    performance: true,
+    marketing: true,
+    analytics: true
+  };
+
+  // Set initial toggle states
+  const performanceToggle = document.getElementById('performanceCookiesToggle');
+  const marketingToggle = document.getElementById('marketingCookiesToggle');
+  const analyticsToggle = document.getElementById('analyticsCookiesToggle');
+
+  if (performanceToggle) performanceToggle.checked = savedPrefs.performance;
+  if (marketingToggle) marketingToggle.checked = savedPrefs.marketing;
+  if (analyticsToggle) analyticsToggle.checked = savedPrefs.analytics;
+
+  // Save Preferences Button
+  const savePreferencesBtn = document.getElementById('savePreferencesBtn');
+  if (savePreferencesBtn) {
+    savePreferencesBtn.addEventListener('click', () => {
+      const prefs = {
+        performance: performanceToggle ? performanceToggle.checked : true,
+        marketing: marketingToggle ? marketingToggle.checked : true,
+        analytics: analyticsToggle ? analyticsToggle.checked : true
+      };
+      localStorage.setItem('fh_cookiePrefs', JSON.stringify(prefs));
+      showToast('Cookie preferences saved successfully.');
+    });
+  }
+
+  // Reject Non-Essential Button
+  const rejectAllBtn = document.getElementById('rejectAllBtn');
+  if (rejectAllBtn) {
+    rejectAllBtn.addEventListener('click', () => {
+      if (performanceToggle) performanceToggle.checked = false;
+      if (marketingToggle) marketingToggle.checked = false;
+      if (analyticsToggle) analyticsToggle.checked = false;
+
+      const prefs = {
+        performance: false,
+        marketing: false,
+        analytics: false
+      };
+      localStorage.setItem('fh_cookiePrefs', JSON.stringify(prefs));
+      showToast('Non-essential cookies disabled.');
+    });
+  }
+
+  // Accept All Button
+  const acceptAllBtn = document.getElementById('acceptAllBtn');
+  if (acceptAllBtn) {
+    acceptAllBtn.addEventListener('click', () => {
+      if (performanceToggle) performanceToggle.checked = true;
+      if (marketingToggle) marketingToggle.checked = true;
+      if (analyticsToggle) analyticsToggle.checked = true;
+
+      const prefs = {
+        performance: true,
+        marketing: true,
+        analytics: true
+      };
+      localStorage.setItem('fh_cookiePrefs', JSON.stringify(prefs));
+      showToast('All cookies enabled.');
+    });
+  }
+}
+
+// ==========================================
+// 11. COOKIE CONSENT BANNER
+// ==========================================
+const cookieBanner = document.getElementById('cookieBanner');
+const cookieManageBtn = document.getElementById('cookieManageBtn');
+const cookieRejectBtn = document.getElementById('cookieRejectBtn');
+const cookieAcceptAllBtn = document.getElementById('cookieAcceptAllBtn');
+
+// Show banner on first visit or if preferences not set
+if (cookieBanner) {
+  const hasConsented = localStorage.getItem('fh_cookieConsent');
+  if (!hasConsented) {
+    setTimeout(() => {
+      cookieBanner.removeAttribute('hidden');
+    }, 1500);
+  }
+}
+
+if (cookieManageBtn) {
+  cookieManageBtn.addEventListener('click', () => {
+    cookieBanner.setAttribute('hidden', '');
+    window.location.hash = '#cookies';
+  });
+}
+
+if (cookieRejectBtn) {
+  cookieRejectBtn.addEventListener('click', () => {
+    const prefs = {
+      performance: false,
+      marketing: false,
+      analytics: false
+    };
+    localStorage.setItem('fh_cookiePrefs', JSON.stringify(prefs));
+    localStorage.setItem('fh_cookieConsent', 'true');
+    cookieBanner.setAttribute('hidden', '');
+    showToast('Non-essential cookies disabled.');
+  });
+}
+
+if (cookieAcceptAllBtn) {
+  cookieAcceptAllBtn.addEventListener('click', () => {
+    const prefs = {
+      performance: true,
+      marketing: true,
+      analytics: true
+    };
+    localStorage.setItem('fh_cookiePrefs', JSON.stringify(prefs));
+    localStorage.setItem('fh_cookieConsent', 'true');
+    cookieBanner.setAttribute('hidden', '');
+    showToast('All cookies enabled.');
+  });
+}
+
+// ==========================================
+// 12. VIDEO CINEMATIC OVERLAY
 // ==========================================
 const playVideoButton = document.getElementById('playVideoButton');
 const videoModal = document.getElementById('videoModal');

@@ -26,10 +26,10 @@
       heading: 'Legal',
       // These are static — not in pages.json
       static: [
-        { title: 'Privacy Policy', href: '#' },
-        { title: 'Terms of Use', href: '#' },
-        { title: 'Cookie Settings', href: '#' },
-        { title: 'Accessibility', href: '#' },
+        { title: 'Privacy Policy', href: '#privacy' },
+        { title: 'Terms of Use', href: '#terms' },
+        { title: 'Cookie Settings', href: '#cookies' },
+        { title: 'Accessibility', href: '#accessibility' },
       ],
     },
   ];
