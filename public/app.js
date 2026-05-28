@@ -395,7 +395,7 @@ function renderHomeCarousel() {
 const carouselTrack = document.getElementById('carouselTrack');
 const carouselPrev = document.getElementById('carouselPrev');
 const carouselNext = document.getElementById('carouselNext');
-const scrollAmount = 290;
+const scrollAmount = 324;
 
 if (carouselPrev && carouselNext && carouselTrack) {
   carouselPrev.addEventListener('click', () => {
@@ -805,7 +805,7 @@ placeOrderBtn.addEventListener('click', async () => {
           email: user.email,
         },
         theme: {
-          color: '#1d1d1f',
+          color: '#4f46e5',
         },
         modal: {
           ondismiss: function () {
