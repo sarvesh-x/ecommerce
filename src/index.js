@@ -10,6 +10,7 @@ const productsRouter = require('./routes/products');
 const ordersRouter = require('./routes/orders');
 const authRouter = require('./routes/auth');
 const paymentRouter = require('./routes/payment');
+const wishlistRouter = require('./routes/wishlist');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -26,6 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/payment', paymentRouter);
+app.use('/api/wishlist', wishlistRouter);
 
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });

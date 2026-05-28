@@ -13,6 +13,9 @@ module.exports = {
   addToWishlist: async (req, res) => {
     try {
       const { productId } = req.body;
+      if (!productId) {
+        return res.status(400).json({ error: 'Product ID is required' });
+      }
       const updated = await wishlistService.addToWishlist(req.user.userId, productId);
       res.json({ wishlist: updated });
     } catch (e) {
@@ -23,6 +26,9 @@ module.exports = {
   removeFromWishlist: async (req, res) => {
     try {
       const { productId } = req.body;
+      if (!productId) {
+        return res.status(400).json({ error: 'Product ID is required' });
+      }
       const updated = await wishlistService.removeFromWishlist(req.user.userId, productId);
       res.json({ wishlist: updated });
     } catch (e) {

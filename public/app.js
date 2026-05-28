@@ -3,6 +3,7 @@ let products = [];
 let cart = JSON.parse(localStorage.getItem('fh_cart')) || [];
 let token = localStorage.getItem('fh_token') || null;
 let user = JSON.parse(localStorage.getItem('fh_user')) || null;
+let wishlist = JSON.parse(localStorage.getItem('fh_wishlist')) || [];
 let activeGenderFilter = 'all';
 let activeCategoryFilter = '';
 let activeSearchQuery = '';
@@ -17,7 +18,9 @@ const moonIcon = darkModeToggle.querySelector('.moon-icon');
 // Auth DOM
 const authModal = document.getElementById('authModal');
 const profileBtn = document.getElementById('profileBtn');
+const wishlistNavBtn = document.getElementById('wishlistNavBtn');
 const userStatusBadge = document.getElementById('userStatusBadge');
+const wishlistCount = document.getElementById('wishlistCount');
 const closeAuthModal = document.getElementById('closeAuthModal');
 const loginCard = document.getElementById('loginCard');
 const signupCard = document.getElementById('signupCard');
@@ -71,9 +74,11 @@ const modalProductColors = document.getElementById('modalProductColors');
 const modalProductSpecs = document.getElementById('modalProductSpecs');
 const modalProductTags = document.getElementById('modalProductTags');
 const modalAddToBagBtn = document.getElementById('modalAddToBagBtn');
+const modalWishlistBtn = document.getElementById('modalWishlistBtn');
 let currentDetailProduct = null;
 let selectedSize = '';
 let selectedColor = '';
+let selectedVariant = null;
 
 // Page Navigation Elements
 const navLinks = document.querySelectorAll('.nav-link');
@@ -221,6 +226,46 @@ function escapeStyleUrl(text) {
   return escapeAttribute(text).replace(/'/g, '%27').replace(/\)/g, '%29');
 }
 
+function getUserInitials(name = '', email = '') {
+  const words = String(name).trim().split(/\s+/).filter(Boolean);
+  if (words.length >= 2) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  const fallback = words[0] || String(email).split('@')[0] || 'U';
+  return fallback.slice(0, 2).toUpperCase();
+}
+
+function setButtonLoading(button, isLoading, loadingText = 'Loading...') {
+  if (!button) return;
+
+  if (isLoading) {
+    button.dataset.originalText = button.innerHTML;
+    button.disabled = true;
+    button.classList.add('is-loading');
+    button.innerHTML = `<span class="btn-spinner" aria-hidden="true"></span>${loadingText}`;
+  } else {
+    button.disabled = false;
+    button.classList.remove('is-loading');
+    if (button.dataset.originalText) {
+      button.innerHTML = button.dataset.originalText;
+      delete button.dataset.originalText;
+    }
+  }
+}
+
+function renderLoadingCards(container, count = 4, cardClass = 'skeleton-card') {
+  if (!container) return;
+  container.innerHTML = Array.from({ length: count }).map(() => `
+    <div class="${cardClass}">
+      <span class="skeleton-media"></span>
+      <span class="skeleton-line wide"></span>
+      <span class="skeleton-line"></span>
+      <span class="skeleton-line short"></span>
+    </div>
+  `).join('');
+}
+
 function formatMoney(amount, currency = 'INR') {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -308,7 +353,8 @@ function updateAuthUI() {
     userStatusBadge.removeAttribute('hidden');
     const avatar = document.getElementById('profileAvatar');
     if (avatar) {
-      avatar.textContent = user.name ? user.name[0].toUpperCase() : 'U';
+      avatar.textContent = getUserInitials(user.name, user.email);
+      avatar.setAttribute('aria-label', `${user.name || 'User'} profile picture`);
     }
     document.getElementById('profileUserName').textContent = user.name || 'Client Profile';
     document.getElementById('profileUserEmail').textContent = user.email || '';
@@ -317,6 +363,7 @@ function updateAuthUI() {
     userStatusBadge.setAttribute('hidden', '');
     customerNameInput.value = '';
   }
+  updateWishlistBadge();
 }
 
 function openAuth(card = 'login') {
@@ -338,6 +385,15 @@ profileBtn.addEventListener('click', () => {
   }
 });
 
+wishlistNavBtn.addEventListener('click', () => {
+  if (token) {
+    window.location.hash = '#profile';
+  } else {
+    openAuth('login');
+    showToast('Please sign in to save favorites.');
+  }
+});
+
 // Bind triggers for auth toggling
 closeAuthModal.addEventListener('click', () => authModal.setAttribute('hidden', ''));
 toSignupLink.addEventListener('click', (e) => { e.preventDefault(); openAuth('signup'); });
@@ -348,6 +404,8 @@ loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
+  const submitBtn = loginForm.querySelector('button[type="submit"]');
+  setButtonLoading(submitBtn, true, 'Signing in...');
 
   try {
     const response = await fetch('/api/auth/login', {
@@ -366,6 +424,7 @@ loginForm.addEventListener('submit', async (e) => {
     user = data.user;
     localStorage.setItem('fh_token', token);
     localStorage.setItem('fh_user', JSON.stringify(user));
+    await loadWishlist();
 
     authModal.setAttribute('hidden', '');
     loginForm.reset();
@@ -378,6 +437,8 @@ loginForm.addEventListener('submit', async (e) => {
     }
   } catch (error) {
     showToast('Server unavailable. Please try again later.');
+  } finally {
+    setButtonLoading(submitBtn, false);
   }
 });
 
@@ -387,6 +448,8 @@ signupForm.addEventListener('submit', async (e) => {
   const name = document.getElementById('signupName').value;
   const email = document.getElementById('signupEmail').value;
   const password = document.getElementById('signupPassword').value;
+  const submitBtn = signupForm.querySelector('button[type="submit"]');
+  setButtonLoading(submitBtn, true, 'Creating...');
 
   try {
     const response = await fetch('/api/auth/signup', {
@@ -405,6 +468,7 @@ signupForm.addEventListener('submit', async (e) => {
     user = data.user;
     localStorage.setItem('fh_token', token);
     localStorage.setItem('fh_user', JSON.stringify(user));
+    await loadWishlist();
 
     authModal.setAttribute('hidden', '');
     signupForm.reset();
@@ -414,6 +478,8 @@ signupForm.addEventListener('submit', async (e) => {
     window.location.hash = '#profile';
   } catch (error) {
     showToast('Server error. Please try again.');
+  } finally {
+    setButtonLoading(submitBtn, false);
   }
 });
 
@@ -421,9 +487,13 @@ signupForm.addEventListener('submit', async (e) => {
 logoutBtn.addEventListener('click', () => {
   token = null;
   user = null;
+  wishlist = [];
   localStorage.removeItem('fh_token');
   localStorage.removeItem('fh_user');
+  localStorage.removeItem('fh_wishlist');
   updateAuthUI();
+  renderHomeCarousel();
+  renderCatalogGrid();
   window.location.hash = '#home';
   showToast('Logged out successfully.');
 });
@@ -439,16 +509,133 @@ document.querySelectorAll('.to-auth-trigger').forEach(btn => {
 // ==========================================
 // 4. DATA LOADING & CATALOG
 // ==========================================
+function updateWishlistBadge() {
+  if (!wishlistCount) return;
+  wishlistCount.textContent = wishlist.length;
+  wishlistCount.hidden = wishlist.length === 0;
+}
+
+function isWishlisted(productId) {
+  return wishlist.includes(productId);
+}
+
+async function loadWishlist() {
+  if (!token) {
+    wishlist = [];
+    localStorage.removeItem('fh_wishlist');
+    updateWishlistBadge();
+    return wishlist;
+  }
+
+  try {
+    const response = await fetch('/api/wishlist', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Unable to load wishlist');
+    }
+
+    wishlist = Array.isArray(data.wishlist) ? data.wishlist : [];
+    localStorage.setItem('fh_wishlist', JSON.stringify(wishlist));
+  } catch (error) {
+    console.error('Failed to load wishlist:', error);
+    showToast('Wishlist is unavailable right now.');
+  }
+
+  updateWishlistBadge();
+  updateWishlistButtons();
+  return wishlist;
+}
+
+async function toggleWishlist(productId, button = null) {
+  if (!token) {
+    openAuth('login');
+    showToast('Please sign in to save favorites.');
+    return;
+  }
+
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const shouldRemove = isWishlisted(productId);
+  if (button) button.classList.add('is-busy');
+
+  try {
+    const response = await fetch('/api/wishlist', {
+      method: shouldRemove ? 'DELETE' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ productId })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error || 'Unable to update wishlist');
+    }
+
+    wishlist = Array.isArray(data.wishlist) ? data.wishlist : [];
+    localStorage.setItem('fh_wishlist', JSON.stringify(wishlist));
+    updateWishlistBadge();
+    updateWishlistButtons(productId);
+    renderProfileWishlist();
+    showToast(shouldRemove ? 'Removed from wishlist.' : `"${product.name}" saved to wishlist.`);
+  } catch (error) {
+    console.error('Wishlist update failed:', error);
+    showToast('Could not update wishlist. Please try again.');
+  } finally {
+    if (button) button.classList.remove('is-busy');
+  }
+}
+
+function updateWishlistButtons(productId = null) {
+  document.querySelectorAll('[data-wishlist-product]').forEach(button => {
+    const id = button.getAttribute('data-wishlist-product');
+    if (productId && id !== productId) return;
+    const active = isWishlisted(id);
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+    button.setAttribute('aria-label', active ? 'Remove from Wishlist' : 'Add to Wishlist');
+    const icon = button.querySelector('.heart-icon');
+    if (icon) icon.textContent = active ? '♥' : '♡';
+  });
+}
+
+function renderWishlistButton(productId, className = 'wishlist-card-btn') {
+  const active = isWishlisted(productId);
+  return `
+    <button
+      class="${className}${active ? ' active' : ''}"
+      data-wishlist-product="${escapeAttribute(productId)}"
+      aria-label="${active ? 'Remove from Wishlist' : 'Add to Wishlist'}"
+      aria-pressed="${active}"
+      onclick="event.stopPropagation(); toggleWishlist('${escapeAttribute(productId)}', this)"
+      type="button">
+      <span class="heart-icon">${active ? '♥' : '♡'}</span>
+    </button>
+  `;
+}
+
+window.toggleWishlist = toggleWishlist;
+
 async function initApp() {
   updateAuthUI();
   updateCartBadge();
+  updateWishlistBadge();
+  renderLoadingCards(document.getElementById('carouselTrack'), 4, 'skeleton-card carousel-skeleton');
+  renderLoadingCards(document.getElementById('productsGrid'), 6, 'skeleton-card product-skeleton');
   try {
     const response = await fetch('/api/products');
     if (!response.ok) {
       throw new Error(`Products API returned ${response.status}`);
     }
     products = await response.json();
+    if (token) {
+      await loadWishlist();
+    }
     renderHomeCarousel();
+    if (window.location.hash.startsWith('#products')) renderCatalogGrid();
   } catch (error) {
     console.error('Failed to load products:', error);
     products = [];
@@ -468,6 +655,7 @@ function renderHomeCarousel() {
 
   track.innerHTML = featured.map(product => `
     <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
+      ${renderWishlistButton(product.id, 'wishlist-card-btn carousel-wishlist-btn')}
       <div class="carousel-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">${escapeHtml(truncateText(product.name, 42))}</div>
       <h3 title="${escapeAttribute(product.name)}">${truncateText(product.name, 34)}</h3>
       <p title="${escapeAttribute(product.description)}">${escapeHtml(truncateText(product.description || '', 96))}</p>
@@ -560,6 +748,7 @@ function renderCatalogGrid() {
 
   grid.innerHTML = filtered.map(product => `
     <div class="product-card" onclick="viewProductDetail('${product.id}')">
+      ${renderWishlistButton(product.id)}
       <div class="product-card-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">
         ${escapeHtml(product.name)}
       </div>
@@ -634,31 +823,19 @@ function viewProductDetail(id) {
   if (!product) return;
 
   currentDetailProduct = product;
-  selectedSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M';
-  selectedColor = product.colors && product.colors.length > 0 ? product.colors[0] : 'Standard';
+  selectedVariant = getInitialVariant(product);
+  selectedSize = selectedVariant?.size || (product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'M');
+  selectedColor = selectedVariant?.color || (product.colors && product.colors.length > 0 ? product.colors[0] : 'Standard');
 
   modalProductName.textContent = product.name;
   modalProductGender.textContent = `${(product.category || 'Gear').toUpperCase()}`;
   modalProductBrand.textContent = product.brand?.name || 'Independent brand';
   modalProductSku.textContent = product.sku ? `SKU ${product.sku}` : `ID ${product.productId || product.id}`;
-  modalProductAvailability.textContent = (product.availability || 'in-stock').replace(/-/g, ' ');
-  modalProductAvailability.className = `availability-pill ${(product.availability || 'in-stock').toLowerCase()}`;
-  modalProductPrice.textContent = formatMoney(product.price, product.currency);
   modalProductDescription.textContent = product.fullDescription || product.description || 'Crafted with premium materials for maximum performance, pop, and durability.';
-  const originalPrice = Number(product.originalPrice || product.price);
-  const salePrice = Number(product.price || 0);
-  if (originalPrice > salePrice) {
-    modalProductOriginalPrice.textContent = formatMoney(originalPrice, product.currency);
-    modalProductDiscount.hidden = false;
-    modalProductDiscount.textContent = product.discountPercentage ? `${product.discountPercentage}% off` : 'Sale';
-  } else {
-    modalProductOriginalPrice.textContent = '';
-    modalProductDiscount.hidden = true;
-  }
+  modalWishlistBtn.setAttribute('data-wishlist-product', product.id);
   const ratingValue = Math.max(0, Math.min(5, Math.round(product.rating?.rate || product.rating?.average || 4.5)));
   modalProductRatingStars.textContent = '★'.repeat(ratingValue) + '☆'.repeat(5 - ratingValue);
   modalProductRatingCount.textContent = `(${product.rating?.count || 24} client reviews)`;
-  modalProductStock.textContent = `${product.availableStock ?? product.inventory ?? 0}`;
   modalProductRawCategory.textContent = product.rawCategory || product.category || 'Gear';
   modalProductSubCategory.textContent = product.subCategory || 'General';
 
@@ -675,15 +852,19 @@ function viewProductDetail(id) {
 
   renderChoiceChips(modalProductSizes, sizeList, selectedSize, 'size-chip', (size) => {
     selectedSize = size;
+    syncSelectedVariant();
   });
 
   renderChoiceChips(modalProductColors, colorList, selectedColor, 'color-chip', (color) => {
     selectedColor = color;
+    syncSelectedVariant();
   });
 
   renderProductSpecs(product.specifications || {});
   renderProductTags(product.tags || []);
 
+  syncSelectedVariant();
+  updateWishlistButtons(product.id);
   productDetailModal.removeAttribute('hidden');
 }
 
@@ -728,25 +909,91 @@ function renderChoiceChips(container, values, selectedValue, className, onSelect
   });
 }
 
+function getInitialVariant(product) {
+  return Array.isArray(product.variants) && product.variants.length ? product.variants[0] : null;
+}
+
+function getVariantPrice(variant, product) {
+  return Number(variant?.salePrice ?? variant?.price ?? product.price ?? 0);
+}
+
+function findMatchingVariant(product, size = selectedSize, color = selectedColor) {
+  const variants = Array.isArray(product?.variants) ? product.variants : [];
+  if (!variants.length) return null;
+
+  return variants.find(variant => variant.size === size && variant.color === color)
+    || variants.find(variant => variant.size === size)
+    || variants.find(variant => variant.color === color)
+    || variants[0];
+}
+
+function refreshSelectedChips() {
+  modalProductSizes.querySelectorAll('.size-chip').forEach(c => {
+    c.classList.toggle('selected', c.textContent === selectedSize);
+  });
+  modalProductColors.querySelectorAll('.color-chip').forEach(c => {
+    c.classList.toggle('selected', c.textContent === selectedColor);
+  });
+}
+
+function updateDetailPrice(product, variant) {
+  const price = getVariantPrice(variant, product);
+  const originalPrice = Number(variant?.originalPrice ?? product.originalPrice ?? product.price ?? price);
+  const discountPercentage = variant?.discountPercentage ?? product.discountPercentage;
+
+  modalProductPrice.textContent = formatMoney(price, product.currency);
+  if (originalPrice > price) {
+    modalProductOriginalPrice.textContent = formatMoney(originalPrice, product.currency);
+    modalProductDiscount.hidden = false;
+    modalProductDiscount.textContent = discountPercentage ? `${discountPercentage}% off` : 'Sale';
+  } else {
+    modalProductOriginalPrice.textContent = '';
+    modalProductDiscount.hidden = true;
+  }
+}
+
+function updateDetailAvailability(product, variant) {
+  const stock = variant?.stock ?? product.availableStock ?? product.inventory ?? 0;
+  const availability = Number(stock) > 0 ? (product.availability || 'in-stock') : 'out-of-stock';
+
+  modalProductStock.textContent = `${stock}`;
+  modalProductAvailability.textContent = availability.replace(/-/g, ' ');
+  modalProductAvailability.className = `availability-pill ${availability.toLowerCase()}`;
+}
+
+function syncSelectedVariant() {
+  if (!currentDetailProduct) return;
+
+  selectedVariant = findMatchingVariant(currentDetailProduct);
+  if (selectedVariant) {
+    selectedSize = selectedVariant.size || selectedSize;
+    selectedColor = selectedVariant.color || selectedColor;
+  }
+
+  refreshSelectedChips();
+  updateDetailPrice(currentDetailProduct, selectedVariant);
+  updateDetailAvailability(currentDetailProduct, selectedVariant);
+}
+
 window.selectProductSize = (size) => {
   selectedSize = size;
-  modalProductSizes.querySelectorAll('.size-chip').forEach(c => {
-    c.classList.remove('selected');
-    if (c.textContent === size) c.classList.add('selected');
-  });
+  syncSelectedVariant();
 };
 
 window.selectProductColor = (color) => {
   selectedColor = color;
-  modalProductColors.querySelectorAll('.color-chip').forEach(c => {
-    c.classList.remove('selected');
-    if (c.textContent === color) c.classList.add('selected');
-  });
+  syncSelectedVariant();
 };
+
+modalWishlistBtn.addEventListener('click', () => {
+  if (!currentDetailProduct) return;
+  toggleWishlist(currentDetailProduct.id, modalWishlistBtn);
+});
 
 closeProductDetailModal.addEventListener('click', () => {
   productDetailModal.setAttribute('hidden', '');
   currentDetailProduct = null;
+  selectedVariant = null;
 });
 
 // Add to Bag Button
@@ -755,6 +1002,7 @@ modalAddToBagBtn.addEventListener('click', () => {
 
   const itemIndex = cart.findIndex(item =>
     item.id === currentDetailProduct.id &&
+    item.variantId === (selectedVariant?.variantId || '') &&
     item.size === selectedSize &&
     item.color === selectedColor
   );
@@ -762,10 +1010,12 @@ modalAddToBagBtn.addEventListener('click', () => {
   if (itemIndex > -1) {
     cart[itemIndex].quantity += 1;
   } else {
+    const itemPrice = getVariantPrice(selectedVariant, currentDetailProduct);
     cart.push({
       id: currentDetailProduct.id,
+      variantId: selectedVariant?.variantId || '',
       name: currentDetailProduct.name,
-      price: currentDetailProduct.price,
+      price: itemPrice,
       currency: currentDetailProduct.currency,
       image: currentDetailProduct.image,
       size: selectedSize,
@@ -1043,9 +1293,14 @@ async function loadProfilePage() {
   const list = document.getElementById('orderHistoryList');
   if (!list) return;
 
-  list.innerHTML = '<p class="empty-orders-msg">Loading client history...</p>';
+  updateAuthUI();
+  renderLoadingCards(list, 2, 'skeleton-card order-skeleton');
+  renderProfileWishlist(true);
 
   try {
+    await loadWishlist();
+    renderProfileWishlist();
+
     const response = await fetch('/api/orders', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -1090,6 +1345,39 @@ async function loadProfilePage() {
   } catch (error) {
     list.innerHTML = `<p class="empty-orders-msg">Unable to reach the history database.</p>`;
   }
+}
+
+function renderProfileWishlist(isLoading = false) {
+  const container = document.getElementById('profileWishlistList');
+  if (!container) return;
+
+  if (isLoading) {
+    renderLoadingCards(container, 3, 'skeleton-card wishlist-skeleton');
+    return;
+  }
+
+  const savedProducts = wishlist
+    .map(productId => products.find(product => product.id === productId))
+    .filter(Boolean);
+
+  if (savedProducts.length === 0) {
+    container.innerHTML = `<p class="empty-orders-msg">No saved favorites yet.</p>`;
+    return;
+  }
+
+  container.innerHTML = savedProducts.map(product => `
+    <div class="wishlist-profile-card" onclick="viewProductDetail('${product.id}')">
+      <div class="wishlist-profile-image" style="${product.image ? `background-image: url('${escapeStyleUrl(product.image)}')` : ''}">
+        ${escapeHtml(truncateText(product.name, 32))}
+      </div>
+      <div class="wishlist-profile-info">
+        <span>${escapeHtml((product.category || 'Gear').toUpperCase())}</span>
+        <h3 title="${escapeAttribute(product.name)}">${escapeHtml(truncateText(product.name, 40))}</h3>
+        <p>${formatMoney(product.price, product.currency)}</p>
+      </div>
+      <button class="remove-wishlist-btn" type="button" onclick="event.stopPropagation(); toggleWishlist('${product.id}', this)">Remove</button>
+    </div>
+  `).join('');
 }
 
 // ==========================================

@@ -51,6 +51,10 @@ exports.signup = async (req, res) => {
       },
     });
   } catch (error) {
+    if (error.code === 'DUPLICATE_EMAIL') {
+      return res.status(409).json({ error: 'Email is already registered' });
+    }
+
     return res.status(500).json({ error: 'Unable to create account' });
   }
 };

@@ -103,7 +103,12 @@ function getProductQuery(id) {
 function toApiProduct(product) {
   if (!product) return null;
 
-  const variants = Array.isArray(product.variants) ? product.variants : [];
+  const variants = Array.isArray(product.variants)
+    ? product.variants.map((variant, index) => ({
+      ...variant,
+      variantId: variant.variantId || variant.varientId || `${product.productId || product.id || product._id}-VAR-${index + 1}`,
+    }))
+    : [];
   const sizes = product.sizes?.length ? product.sizes : uniqueValues(variants.map(v => v.size));
   const colors = product.colors?.length ? product.colors : uniqueValues(variants.map(v => v.color));
   const description = typeof product.description === 'string'

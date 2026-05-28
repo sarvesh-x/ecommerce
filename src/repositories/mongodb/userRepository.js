@@ -2,47 +2,49 @@ const mongoose = require('mongoose');
 const db = require('../../config/db');
 const User = require('../../models/User');
 
-const memoryUsers = {};
+async function ensureMongoConnection() {
+  if (db.isMongoActive() && mongoose.connection.readyState === 1) return;
+
+  const connected = await db.connectMongo();
+  if (!connected) {
+    throw new Error('MongoDB is unavailable. Start MongoDB or set MONGODB_URI to store credentials in ecommerce.users.');
+  }
+}
+
+function toApiUser(user) {
+  if (!user) return null;
+
+  return {
+    ...user,
+    userId: user.userId || String(user._id),
+  };
+}
 
 exports.getUserByEmail = async (email) => {
-  try {
-    if (db.isMongoActive() && mongoose.connection.readyState) {
-      return await User.findOne({ email }).lean();
-    }
-  } catch (error) {
-    console.warn(`MongoDB: Failed to get user by email, falling back to memory database. Error: ${error.message}`);
-  }
-
-  return memoryUsers[email] || null;
+  await ensureMongoConnection();
+  const user = await User.findOne({ email }).lean();
+  return toApiUser(user);
 };
 
 exports.createUser = async (user) => {
   try {
-    if (db.isMongoActive() && mongoose.connection.readyState) {
-      const newUser = new User({
-        email: user.email,
-        passwordHash: user.passwordHash,
-        name: user.name,
-        createdAt: user.createdAt || new Date(),
-      });
-      await newUser.save();
-      return newUser.toObject();
-    }
+    await ensureMongoConnection();
+    const newUser = new User({
+      userId: user.userId,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      name: user.name,
+      createdAt: user.createdAt || new Date(),
+    });
+    await newUser.save();
+    return toApiUser(newUser.toObject());
   } catch (error) {
-    console.warn(`MongoDB: Failed to create user, falling back to memory database. Error: ${error.message}`);
-    if (error.code === 11000 || error.name === 'MongoServerError') {
+    if (error.code === 11000) {
       const err = new Error('DuplicateEmail');
       err.code = 'DUPLICATE_EMAIL';
       throw err;
     }
-  }
 
-  if (memoryUsers[user.email]) {
-    const err = new Error('DuplicateEmail');
-    err.code = 'DUPLICATE_EMAIL';
-    throw err;
+    throw error;
   }
-
-  memoryUsers[user.email] = user;
-  return user;
 };
