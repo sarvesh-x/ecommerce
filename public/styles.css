@@ -577,7 +577,8 @@ body.dark-mode .carousel-card:hover {
 .product-card-image.has-image,
 .modal-product-image.has-image,
 .cart-item-img.has-image,
-.order-img-container.has-image {
+.order-img-container.has-image,
+.wishlist-profile-image.has-image {
   color: transparent;
   background-color: transparent !important;
 }
@@ -2063,6 +2064,8 @@ body.dark-mode .product-card:hover {
   border-radius: 4px;
 }
 
+
+
 .order-status-badge.paid {
   background-color: rgba(52, 199, 89, 0.15);
   color: var(--success);
@@ -2071,6 +2074,63 @@ body.dark-mode .product-card:hover {
 .order-status-badge.pending {
   background-color: rgba(255, 149, 0, 0.15);
   color: #ff9500;
+}
+
+.order-status-badge.cancelled {
+  background-color: rgba(255, 59, 48, 0.15);
+  color: var(--danger);
+}
+
+.order-main-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.order-img-container {
+  width: 60px;
+  height: 60px;
+  background-color: var(--bg-offset);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.order-card-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.order-cancel-btn {
+  background-color: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.order-cancel-btn:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+}
+
+.order-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .empty-orders-msg {
