@@ -114,7 +114,7 @@ h6 {
 }
 
 .header-container {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0 22px;
   height: 100%;
@@ -530,7 +530,7 @@ body.dark-mode .featured-bg {
 
 /* Collection Grid / Spacing */
 .collection-section {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 70px auto;
   padding: 0 22px;
 }
@@ -742,7 +742,7 @@ body.dark-mode .carousel-btn {
 
 /* Video Showcase Section */
 .video-section {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 80px auto;
   padding: 0 22px;
   position: relative;
@@ -1232,7 +1232,7 @@ body.dark-mode .carousel-btn {
 
 /* Catalog Layout */
 .catalog-container {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 40px auto 80px;
   padding: 0 22px;
 }
@@ -2368,7 +2368,7 @@ body.dark-mode .product-card:hover {
 }
 
 .footer-container {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -2417,7 +2417,7 @@ body.dark-mode .product-card:hover {
 }
 
 .footer-bottom {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 40px auto 0;
   border-top: 1px solid var(--border);
   padding-top: 24px;
@@ -2618,7 +2618,7 @@ body.dark-mode .product-card:hover {
 
 /* Main grid row: brand + sitemap columns */
 .footer-inner {
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 60px 22px 40px;
   display: grid;
@@ -2722,7 +2722,7 @@ body.dark-mode .product-card:hover {
 /* ── Bottom bar ───────────────────────────────────────────────── */
 .footer-bottom-bar {
   border-top: 1px solid var(--border);
-  max-width: 1024px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 18px 22px;
   display: flex;
