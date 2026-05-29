@@ -319,23 +319,7 @@ h6 {
   overflow: hidden;
 }
 
-.main-hero {
-  /* Peach/summer soft Apple style gradient */
-  background: linear-gradient(135deg, #f5d6c6 0%, #e3f2fd 100%);
-}
 
-body.dark-mode .main-hero {
-  background: linear-gradient(135deg, #2b1f1a 0%, #0d1b2a 100%);
-}
-
-.secondary-hero {
-  /* Slate/denim clean aesthetic */
-  background: linear-gradient(135deg, #cfd8dc 0%, #eceff1 100%);
-}
-
-body.dark-mode .secondary-hero {
-  background: linear-gradient(135deg, #1c2331 0%, #0a0a0c 100%);
-}
 
 .hero-bg-overlay {
   position: absolute;
@@ -717,28 +701,43 @@ body.dark-mode .carousel-card:hover {
   color: #ffffff;
 }
 
-.carousel-controls {
-  display: flex;
-  gap: 8px;
-}
-
 .carousel-btn {
-  background-color: var(--bg-offset);
-  border: none;
-  width: 32px;
-  height: 32px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   color: var(--text);
-  font-size: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.carousel-prev {
+  left: 12px;
+}
+
+.carousel-next {
+  right: 12px;
 }
 
 .carousel-btn:hover {
-  background-color: var(--border);
+  background-color: var(--text);
+  color: var(--bg);
+  transform: translateY(-50%) scale(1.08);
+}
+
+body.dark-mode .carousel-btn {
+  background-color: var(--bg-offset);
+  border-color: var(--border);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
 }
 
 /* Video Showcase Section */
@@ -1242,13 +1241,23 @@ body.dark-mode .carousel-card:hover {
   margin-bottom: 40px;
 }
 
+.catalog-header {
+  margin-bottom: 40px;
+  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('assets/fullscreen.jpeg') no-repeat center center;
+  background-size: cover;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
 .catalog-header h1 {
   font-size: 2.2rem;
   margin-bottom: 8px;
+  color: #fff;
 }
 
 .catalog-header p {
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.85);
 }
 
 .catalog-filters-bar {
@@ -2595,7 +2604,16 @@ body.dark-mode .product-card:hover {
   margin-top: 80px;
   border-top: 1px solid var(--border);
   background-color: var(--bg-offset);
+  padding: 0;
   transition: background-color 0.4s var(--ease-standard), border-color 0.4s var(--ease-standard);
+}
+
+/* Hero banner at top of footer */
+.footer-banner {
+  width: 100%;
+  height: 200px;
+  background: url('assets/HeroBanner.jpeg') no-repeat center center;
+  background-size: cover;
 }
 
 /* Main grid row: brand + sitemap columns */

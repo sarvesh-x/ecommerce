@@ -775,7 +775,7 @@ function renderHomeCarousel() {
   `).join('');
 }
 
-// Carousel Scroll Navigation
+// Carousel Scroll Navigation (endless)
 const carouselTrack = document.getElementById('carouselTrack');
 const carouselPrev = document.getElementById('carouselPrev');
 const carouselNext = document.getElementById('carouselNext');
@@ -783,10 +783,19 @@ const scrollAmount = 290;
 
 if (carouselPrev && carouselNext && carouselTrack) {
   carouselPrev.addEventListener('click', () => {
-    carouselTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    if (carouselTrack.scrollLeft <= 0) {
+      carouselTrack.scrollTo({ left: carouselTrack.scrollWidth, behavior: 'smooth' });
+    } else {
+      carouselTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    }
   });
   carouselNext.addEventListener('click', () => {
-    carouselTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    const atEnd = carouselTrack.scrollLeft + carouselTrack.clientWidth >= carouselTrack.scrollWidth - 1;
+    if (atEnd) {
+      carouselTrack.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      carouselTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   });
 }
 
