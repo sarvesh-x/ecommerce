@@ -450,8 +450,29 @@ body.dark-mode .secondary-hero-btn:hover {
 }
 
 .main-hero .hero-text-wrapper {
+  margin-left: auto;
+  margin-right: 5%;
+  text-align: right;
+  max-width: 50%;
+}
+
+.main-hero .hero-buttons {
+  justify-content: flex-end;
+}
+
+.main-hero .hero-3d-container {
   flex: 1;
-  max-width: 55%;
+  max-width: 45%;
+  height: 100%;
+  min-height: 400px;
+  position: relative;
+  z-index: 2;
+}
+
+.main-hero .hero-3d-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .main-hero .hero-image {
@@ -2621,6 +2642,29 @@ body.dark-mode .product-card:hover {
     width: 100%;
     min-height: 200px;
     height: 200px;
+  }
+
+  .main-hero {
+    flex-direction: column-reverse;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .main-hero .hero-text-wrapper {
+    max-width: 100%;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .main-hero .hero-3d-container {
+    max-width: 100%;
+    width: 100%;
+    min-height: 200px;
+    height: 200px;
+  }
+
+  .main-hero .hero-buttons {
+    justify-content: center;
   }
 
   .video-section {
