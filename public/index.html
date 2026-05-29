@@ -13,6 +13,8 @@
     rel="stylesheet">
   <!-- Razorpay SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -333,15 +335,86 @@
 
       </section>
 
+      <!-- Completes & Decks Carousel -->
+      <section class="collection-section" id="completes-decks-carousel">
+        <div class="collection-header">
+          <div class="header-left">
+            <span class="sec-subtitle font-caps">COMPLETES & DECKS</span>
+            <h2>Premium Builds</h2>
+          </div>
+        </div>
+
+        <div class="carousel-container">
+          <button class="carousel-btn carousel-prev" id="cdCarouselPrev" aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="carousel-btn carousel-next" id="cdCarouselNext" aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 6 15 12 9 18"/>
+            </svg>
+          </button>
+          <div class="carousel-track" id="cdCarouselTrack">
+            <!-- Cards generated dynamically via JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Banner 2 -->
+      <section class="hero-banner featured-banner">
+        <div class="featured-bg-alt"></div>
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-text-wrapper center">
+          <h1 class="hero-title">Build Your Setup</h1>
+          <p class="hero-description">Premium wheels, trucks, bearings, and hardware — engineered for precision and durability on every session.</p>
+          <div class="hero-buttons center">
+            <button id="bannerArrowBtn2" class="hero-btn arrow-btn" aria-label="Scroll to parts and hardware">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="3" x2="12" y2="19"/>
+                <polyline points="5 12 12 19 19 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Hero Banner 2 (Secondary Style Contrast) -->
       <section class="hero-banner secondary-hero">
         <div class="hero-bg-overlay"></div>
+        <div id="wheel3d-container" class="hero-3d-container"></div>
         <div class="hero-text-wrapper">
-          <span class="hero-subtitle">PRO DECKS</span>
-          <h1 class="hero-title">Baker, Toy Machine & Primitive</h1>
-          <p class="hero-description">Authentic deck shapes, iconic graphic collaborations, and deep concaves built to withstand heavy impacts.</p>
+          <span class="hero-subtitle">PARTS & HARDWARE</span>
+          <h1 class="hero-title">Wheels, trucks & hardware essentials</h1>
+          <p class="hero-description">Premium parts and accessories built for smooth control, durability, and precision — from bearings and grip tape to hardware for the perfect setup.</p>
           <div class="hero-buttons">
-            <a href="#products" class="hero-btn white-hero-btn" data-gender="Decks">Explore Decks Collection</a>
+            <a href="#products" class="hero-btn white-hero-btn" data-gender="Parts & Hardware">Explore Parts & Hardware</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Parts & Hardware Carousel -->
+      <section class="collection-section" id="parts-carousel">
+        <div class="collection-header">
+          <div class="header-left">
+            <span class="sec-subtitle font-caps">PARTS & HARDWARE</span>
+            <h2>Essential Gear</h2>
+          </div>
+        </div>
+
+        <div class="carousel-container">
+          <button class="carousel-btn carousel-prev" id="partsCarouselPrev" aria-label="Previous">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+          </button>
+          <button class="carousel-btn carousel-next" id="partsCarouselNext" aria-label="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 6 15 12 9 18"/>
+            </svg>
+          </button>
+          <div class="carousel-track" id="partsCarouselTrack">
+            <!-- Cards generated dynamically via JavaScript -->
           </div>
         </div>
       </section>
@@ -1016,6 +1089,28 @@
     </div>
   </div>
 
+  <!-- Brand Marquee -->
+  <section class="brand-marquee">
+    <div class="marquee-track">
+      <img class="marquee-item" src="assets/logo-baker.svg" alt="Baker">
+      <img class="marquee-item" src="assets/logo-zero.svg" alt="Zero">
+      <img class="marquee-item" src="assets/logo-santacruz.svg" alt="Santa Cruz">
+      <img class="marquee-item" src="assets/logo-bones.svg" alt="Bones">
+      <img class="marquee-item" src="assets/logo-powellperalta.svg" alt="Powell Peralta">
+      <span class="marquee-item marquee-text">TOY MACHINE</span>
+      <span class="marquee-item marquee-text">PRIMITIVE</span>
+      <span class="marquee-item marquee-text">INDEPENDENT</span>
+      <span class="marquee-item marquee-text">THUNDER</span>
+      <span class="marquee-item marquee-text">SPITFIRE</span>
+      <span class="marquee-item marquee-text">ELEMENT</span>
+      <span class="marquee-item marquee-text">GIRL</span>
+      <span class="marquee-item marquee-text">CHOCOLATE</span>
+      <span class="marquee-item marquee-text">ALMOST</span>
+      <span class="marquee-item marquee-text">DARKSTAR</span>
+      <span class="marquee-item marquee-text">PLAN B</span>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="site-footer">
     <!-- Hero Banner -->
@@ -1140,6 +1235,7 @@
 
   <script src="app.js"></script>
   <script src="footer.js"></script>
+  <script src="wheel3d.js"></script>
 </body>
 
 </html>

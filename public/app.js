@@ -1,4 +1,5 @@
 // State Management
+history.scrollRestoration = 'manual';
 const API_BASE = window.location.origin.includes('localhost:4000') || window.location.origin.includes('127.0.0.1:4000')
   ? ''
   : 'http://localhost:4000';
@@ -165,6 +166,8 @@ function handleRoute() {
     if (targetSection) showSection(targetSection);
     document.querySelector('.nav-link[href="#home"]')?.classList.add('active');
     renderHomeCarousel();
+    renderPartsCarousel();
+    renderCompletesDecksCarousel();
     openCartDrawer();
   } else if (hash === '#privacy') {
     const targetSection = document.getElementById('page-privacy');
@@ -202,6 +205,8 @@ function handleRoute() {
     showSection(targetSection);
     document.querySelector('.nav-link[href="#home"]')?.classList.add('active');
     renderHomeCarousel();
+    renderPartsCarousel();
+    renderCompletesDecksCarousel();
   }
 
   // Scroll to top
@@ -593,6 +598,8 @@ logoutBtn.addEventListener('click', () => {
   localStorage.removeItem('fh_wishlist');
   updateAuthUI();
   renderHomeCarousel();
+  renderPartsCarousel();
+  renderCompletesDecksCarousel();
   renderCatalogGrid();
   window.location.hash = '#home';
   showToast('Logged out successfully.');
@@ -723,8 +730,20 @@ function renderWishlistButton(productId, className = 'wishlist-card-btn') {
 
 window.toggleWishlist = toggleWishlist;
 
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const headerOffset = 70;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
 document.getElementById('bannerArrowBtn')?.addEventListener('click', () => {
-  document.getElementById('featured-products')?.scrollIntoView({ behavior: 'smooth' });
+  scrollToSection('completes-decks-carousel');
+});
+
+document.getElementById('bannerArrowBtn2')?.addEventListener('click', () => {
+  scrollToSection('parts-carousel');
 });
 
 async function initApp() {
@@ -743,6 +762,8 @@ async function initApp() {
       await loadWishlist();
     }
     renderHomeCarousel();
+    renderPartsCarousel();
+    renderCompletesDecksCarousel();
     if (window.location.hash.startsWith('#products')) renderCatalogGrid();
   } catch (error) {
     console.error('Failed to load products:', error);
@@ -775,29 +796,73 @@ function renderHomeCarousel() {
   `).join('');
 }
 
-// Carousel Scroll Navigation (endless)
-const carouselTrack = document.getElementById('carouselTrack');
-const carouselPrev = document.getElementById('carouselPrev');
-const carouselNext = document.getElementById('carouselNext');
-const scrollAmount = 290;
+function renderCompletesDecksCarousel() {
+  const track = document.getElementById('cdCarouselTrack');
+  if (!track || products.length === 0) return;
 
-if (carouselPrev && carouselNext && carouselTrack) {
-  carouselPrev.addEventListener('click', () => {
-    if (carouselTrack.scrollLeft <= 0) {
-      carouselTrack.scrollTo({ left: carouselTrack.scrollWidth, behavior: 'smooth' });
+  const items = products.filter(p => p.gender === 'Completes' || p.gender === 'Decks');
+
+  track.innerHTML = items.map(product => `
+    <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
+      ${renderWishlistButton(product.id, 'wishlist-card-btn carousel-wishlist-btn')}
+      <div class="carousel-card-image${getProductImageUrl(product) ? ' has-image' : ''}" style="${getProductImageUrl(product) ? `background-image: url('${escapeStyleUrl(getProductImageUrl(product))}')` : ''}">${getProductImageUrl(product) ? '' : escapeHtml(truncateText(product.name, 42))}</div>
+      <h3 title="${escapeAttribute(product.name)}">${truncateText(product.name, 34)}</h3>
+      <p title="${escapeAttribute(product.description)}">${escapeHtml(truncateText(product.description || '', 96))}</p>
+      <div class="carousel-card-footer">
+        <span class="carousel-card-price">${formatMoney(product.price, product.currency)}</span>
+        <button class="carousel-card-btn" onclick="event.stopPropagation(); viewProductDetail('${product.id}')">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderPartsCarousel() {
+  const track = document.getElementById('partsCarouselTrack');
+  if (!track || products.length === 0) return;
+
+  const parts = products.filter(p => p.gender === 'Parts');
+
+  track.innerHTML = parts.map(product => `
+    <div class="carousel-card" onclick="viewProductDetail('${product.id}')">
+      ${renderWishlistButton(product.id, 'wishlist-card-btn carousel-wishlist-btn')}
+      <div class="carousel-card-image${getProductImageUrl(product) ? ' has-image' : ''}" style="${getProductImageUrl(product) ? `background-image: url('${escapeStyleUrl(getProductImageUrl(product))}')` : ''}">${getProductImageUrl(product) ? '' : escapeHtml(truncateText(product.name, 42))}</div>
+      <h3 title="${escapeAttribute(product.name)}">${truncateText(product.name, 34)}</h3>
+      <p title="${escapeAttribute(product.description)}">${escapeHtml(truncateText(product.description || '', 96))}</p>
+      <div class="carousel-card-footer">
+        <span class="carousel-card-price">${formatMoney(product.price, product.currency)}</span>
+        <button class="carousel-card-btn" onclick="event.stopPropagation(); viewProductDetail('${product.id}')">+</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Carousel Scroll Navigation (endless)
+function setupCarouselNav(trackId, prevId, nextId, scrollAmount) {
+  const track = document.getElementById(trackId);
+  const prev = document.getElementById(prevId);
+  const next = document.getElementById(nextId);
+  if (!prev || !next || !track) return;
+
+  prev.addEventListener('click', () => {
+    if (track.scrollLeft <= 0) {
+      track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
     } else {
-      carouselTrack.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     }
   });
-  carouselNext.addEventListener('click', () => {
-    const atEnd = carouselTrack.scrollLeft + carouselTrack.clientWidth >= carouselTrack.scrollWidth - 1;
+  next.addEventListener('click', () => {
+    const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
     if (atEnd) {
-      carouselTrack.scrollTo({ left: 0, behavior: 'smooth' });
+      track.scrollTo({ left: 0, behavior: 'smooth' });
     } else {
-      carouselTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   });
 }
+
+setupCarouselNav('carouselTrack', 'carouselPrev', 'carouselNext', 290);
+setupCarouselNav('cdCarouselTrack', 'cdCarouselPrev', 'cdCarouselNext', 290);
+setupCarouselNav('partsCarouselTrack', 'partsCarouselPrev', 'partsCarouselNext', 290);
 
 function loadProductsPage() {
   renderCatalogGrid();

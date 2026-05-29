@@ -340,10 +340,35 @@ h6 {
 }
 
 /* Align secondary hero content to right */
+.secondary-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  position: relative;
+  overflow: hidden;
+}
+
 .secondary-hero .hero-text-wrapper {
   margin-left: auto;
   margin-right: 10%;
   text-align: right;
+  max-width: 55%;
+}
+
+.secondary-hero .hero-3d-container {
+  flex: 1;
+  max-width: 45%;
+  height: 100%;
+  min-height: 400px;
+  position: relative;
+  z-index: 2;
+}
+
+.secondary-hero .hero-3d-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .hero-subtitle {
@@ -470,6 +495,19 @@ body.dark-mode .secondary-hero-btn:hover {
 }
 
 body.dark-mode .featured-bg {
+  filter: brightness(0.5);
+}
+
+.featured-bg-alt {
+  position: absolute;
+  inset: 0;
+  background: url('assets/fullscreen2.jpg') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+body.dark-mode .featured-bg-alt {
   filter: brightness(0.5);
 }
 
@@ -2562,6 +2600,29 @@ body.dark-mode .product-card:hover {
     margin-left: 0;
   }
 
+  .secondary-hero {
+    flex-direction: column-reverse;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .secondary-hero .hero-text-wrapper {
+    max-width: 100%;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .secondary-hero .hero-buttons {
+    justify-content: center;
+  }
+
+  .secondary-hero .hero-3d-container {
+    max-width: 100%;
+    width: 100%;
+    min-height: 200px;
+    height: 200px;
+  }
+
   .video-section {
     height: auto;
   }
@@ -2606,6 +2667,59 @@ body.dark-mode .product-card:hover {
   background-color: var(--bg-offset);
   padding: 0;
   transition: background-color 0.4s var(--ease-standard), border-color 0.4s var(--ease-standard);
+}
+
+/* Brand Marquee */
+.brand-marquee {
+  overflow: hidden;
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg);
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+  animation: marqueeScroll 35s linear infinite;
+  width: max-content;
+}
+
+.marquee-item {
+  height: 40px;
+  width: auto;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: grayscale(1) opacity(0.5);
+  transition: filter 0.3s ease;
+}
+
+.marquee-item:hover {
+  filter: grayscale(0) opacity(1);
+}
+
+.marquee-text {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  filter: none;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.marquee-text:hover {
+  opacity: 1;
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* Hero banner at top of footer */
