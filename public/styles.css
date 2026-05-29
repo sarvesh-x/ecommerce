@@ -4,11 +4,13 @@ body {
 }
 
 a, button, input, select, textarea, [onclick],
-.icon-btn, .cart-btn, .wishlist-card-btn, .carousel-card,
-.carousel-btn, .product-card, .product-thumbnail,
-.hero-btn, .carousel-card-btn, .nav-link,
-.footer-social-link, .secondary-btn, .primary-btn,
-.close-modal-btn, .cookie-btn, .marquee-item {
+[style*="cursor: pointer"], [class*="btn"], [class*="link"],
+[class*="card"], [class*="icon"], [class*="close"],
+.nav-link, .footer-social-link, .marquee-item, .logo a,
+.site-header a, .site-header button, .carousel-btn,
+.carousel-card, .product-card, .product-thumbnail,
+.hero-btn, .secondary-btn, .primary-btn, .close-modal-btn,
+.cookie-btn, .cookie-accept-btn {
   cursor: url('assets/pointer.png') 32 32, pointer !important;
 }
 
