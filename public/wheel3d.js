@@ -43,10 +43,6 @@
   renderer.outputColorSpace =
     THREE.SRGBColorSpace;
 
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type =
-    THREE.PCFSoftShadowMap;
-
   container.appendChild(renderer.domElement);
 
   // ------------------------------------------------
@@ -66,7 +62,6 @@
     );
 
   keyLight.position.set(5, 6, 5);
-  keyLight.castShadow = true;
 
   scene.add(keyLight);
 
@@ -176,9 +171,6 @@
       materials
     );
 
-  wheel.castShadow = true;
-  wheel.receiveShadow = true;
-
   // Face the camera
   wheel.rotation.y =
     0;
@@ -218,36 +210,6 @@
     Math.PI / 2;
 
   scene.add(hole);
-
-  // ------------------------------------------------
-  // Ground shadow
-  // ------------------------------------------------
-  const shadow =
-    new THREE.Mesh(
-      new THREE.CircleGeometry(
-        0.7,
-        64
-      ),
-      new THREE.MeshBasicMaterial({
-        color: 0x000000,
-        transparent: true,
-        opacity: 0.12
-      })
-    );
-
-  shadow.rotation.x =
-    -Math.PI / 2;
-
-  shadow.scale.set(
-    0.6,
-    0.6,
-    0.6
-  );
-
-  shadow.position.y =
-    -0.8;
-
-  scene.add(shadow);
 
   // ------------------------------------------------
   // Resize

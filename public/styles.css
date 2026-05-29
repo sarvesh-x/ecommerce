@@ -1,3 +1,17 @@
+/* Custom Cursors */
+body {
+  cursor: url('assets/cursor.png') 32 32, auto;
+}
+
+a, button, input, select, textarea, [onclick],
+.icon-btn, .cart-btn, .wishlist-card-btn, .carousel-card,
+.carousel-btn, .product-card, .product-thumbnail,
+.hero-btn, .carousel-card-btn, .nav-link,
+.footer-social-link, .secondary-btn, .primary-btn,
+.close-modal-btn, .cookie-btn, .marquee-item {
+  cursor: url('assets/pointer.png') 32 32, pointer !important;
+}
+
 /* CSS Variables for Light / Dark Mode */
 :root {
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -6,7 +20,7 @@
   /* HSL Color Palette (Light Mode defaults) */
   --bg: #ffffff;
   --bg-offset: #f5f5f7;
-  --bg-translucent: rgba(255, 255, 255, 0.85);
+  --bg-translucent: rgba(255, 255, 255, 0.65);
   --text: #1d1d1f;
   --text-secondary: #86868b;
   --text-tertiary: #a1a1a6;
@@ -30,7 +44,7 @@
 body.dark-mode {
   --bg: #000000;
   --bg-offset: #121212;
-  --bg-translucent: rgba(0, 0, 0, 0.8);
+  --bg-translucent: rgba(0, 0, 0, 0.55);
   --text: #f5f5f7;
   --text-secondary: #a1a1a6;
   --text-tertiary: #6e6e73;
@@ -311,12 +325,13 @@ h6 {
 /* Banners / Hero Banners */
 .hero-banner {
   height: calc(85vh - var(--header-height));
-  min-height: 480px;
+  min-height: 560px;
   position: relative;
   display: flex;
   align-items: center;
   padding: 0 40px;
   overflow: hidden;
+  clip-path: polygon(0 0, 100% 75px, 100% calc(100% - 75px), 0 100%);
 }
 
 
@@ -327,7 +342,6 @@ h6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
   z-index: 1;
 }
 
@@ -447,17 +461,18 @@ body.dark-mode .secondary-hero-btn:hover {
   padding: 0 22px;
   position: relative;
   overflow: hidden;
+  clip-path: polygon(0 75px, 100% 0, 100% 100%, 0 calc(100% - 75px));
 }
 
 .main-hero .hero-text-wrapper {
-  margin-left: auto;
-  margin-right: 5%;
-  text-align: right;
+  margin-left: 5%;
+  margin-right: auto;
+  text-align: left;
   max-width: 50%;
 }
 
 .main-hero .hero-buttons {
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .main-hero .hero-3d-container {
@@ -467,6 +482,7 @@ body.dark-mode .secondary-hero-btn:hover {
   min-height: 400px;
   position: relative;
   z-index: 2;
+  margin-top: 60px;
 }
 
 .main-hero .hero-3d-container {
@@ -499,6 +515,10 @@ body.dark-mode .secondary-hero-btn:hover {
 }
 
 /* Featured Banner 2026 */
+#featured-banner-1 {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 75px), 0 100%);
+}
+
 .featured-banner {
   position: relative;
   overflow: hidden;
@@ -2745,6 +2765,11 @@ body.dark-mode .product-card:hover {
   .video-overlay-text {
     padding: 24px;
   }
+
+  .feature-strip-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2784,6 +2809,51 @@ body.dark-mode .product-card:hover {
   transition: background-color 0.4s var(--ease-standard), border-color 0.4s var(--ease-standard);
 }
 
+/* Feature Strip */
+.feature-strip {
+  background-color: var(--bg-offset);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.feature-strip-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.feature-label {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.feature-desc {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+
 /* Brand Marquee */
 .brand-marquee {
   overflow: hidden;
@@ -2806,12 +2876,12 @@ body.dark-mode .product-card:hover {
   width: auto;
   flex-shrink: 0;
   object-fit: contain;
-  filter: grayscale(1) opacity(0.5);
+  filter: brightness(0) opacity(0.35);
   transition: filter 0.3s ease;
 }
 
 .marquee-item:hover {
-  filter: grayscale(0) opacity(1);
+  filter: brightness(0) opacity(0.7);
 }
 
 .marquee-text {
@@ -2994,6 +3064,11 @@ body.dark-mode .product-card:hover {
 
   .footer-legal-links {
     gap: 12px;
+  }
+
+  .feature-strip-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 
