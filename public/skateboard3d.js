@@ -149,6 +149,73 @@
   scene.add(skateboard);
 
   // ------------------------------------------------
+  // Swipe / Drag to Rotate
+  // ------------------------------------------------
+  let isDragging = false;
+  let prevX = 0;
+  let velocity = 0;
+  let rotationY = 0;
+
+  function getPointerX(e) {
+    if (e.touches) {
+      return e.touches[0].clientX;
+    }
+    return e.clientX;
+  }
+
+  function onPointerDown(e) {
+    isDragging = true;
+    prevX = getPointerX(e);
+    velocity = 0;
+  }
+
+  function onPointerMove(e) {
+    if (!isDragging) return;
+    const x = getPointerX(e);
+    const delta = x - prevX;
+    rotationY += delta * 0.008;
+    skateboard.rotation.y = rotationY;
+    prevX = x;
+    velocity = delta * 0.008;
+  }
+
+  function onPointerUp() {
+    isDragging = false;
+  }
+
+  container.addEventListener(
+    'mousedown',
+    onPointerDown
+  );
+
+  window.addEventListener(
+    'mousemove',
+    onPointerMove
+  );
+
+  window.addEventListener(
+    'mouseup',
+    onPointerUp
+  );
+
+  container.addEventListener(
+    'touchstart',
+    onPointerDown,
+    { passive: true }
+  );
+
+  window.addEventListener(
+    'touchmove',
+    onPointerMove,
+    { passive: true }
+  );
+
+  window.addEventListener(
+    'touchend',
+    onPointerUp
+  );
+
+  // ------------------------------------------------
   // Resize
   // ------------------------------------------------
   function onResize() {
@@ -198,8 +265,13 @@
     skateboard.position.y =
       -0.1 + floatY;
 
-    skateboard.rotation.y =
-      Math.sin(t * 0.3) * 0.15;
+    if (!isDragging &&
+        Math.abs(velocity) > 0.0001) {
+      rotationY += velocity;
+      velocity *= 0.96;
+      skateboard.rotation.y =
+        rotationY;
+    }
 
     skateboard.rotation.x =
       Math.sin(t * 0.5) * 0.02;

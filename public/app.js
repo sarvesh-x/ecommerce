@@ -746,6 +746,10 @@ document.getElementById('bannerArrowBtn2')?.addEventListener('click', () => {
   scrollToSection('parts-carousel');
 });
 
+document.getElementById('bannerArrowBtn3')?.addEventListener('click', () => {
+  scrollToSection('featured-products');
+});
+
 async function initApp() {
   updateAuthUI();
   updateCartBadge();

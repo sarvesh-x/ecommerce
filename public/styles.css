@@ -20,7 +20,7 @@
   --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   --modal-overlay: rgba(0, 0, 0, 0.4);
 
-  --header-height: 48px;
+  --header-height: 56px;
   --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
   --radius-standard: 12px;
   --radius-pill: 999px;
@@ -126,7 +126,7 @@ h6 {
 .logo {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   letter-spacing: -0.03em;
 }
 
@@ -145,8 +145,8 @@ h6 {
 }
 
 .nav-link {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 0.85rem;
+  font-weight: 500;
   color: var(--text-secondary);
   opacity: 0.85;
   transition: opacity 0.2s ease, color 0.2s ease;
@@ -469,6 +469,10 @@ body.dark-mode .secondary-hero-btn:hover {
   z-index: 2;
 }
 
+.main-hero .hero-3d-container {
+  touch-action: none;
+}
+
 .main-hero .hero-3d-container canvas {
   display: block;
   width: 100% !important;
@@ -532,6 +536,19 @@ body.dark-mode .featured-bg-alt {
   filter: brightness(0.5);
 }
 
+.featured-bg-3 {
+  position: absolute;
+  inset: 0;
+  background: url('assets/fullscreen3.jpeg') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+body.dark-mode .featured-bg-3 {
+  filter: brightness(0.5);
+}
+
 .featured-banner .hero-text-wrapper.center {
   margin: 0 auto;
   text-align: center;
@@ -585,6 +602,60 @@ body.dark-mode .featured-bg-alt {
 @keyframes bounceArrow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
+}
+
+/* Customer Reviews */
+.reviews-section {
+  margin: 90px auto;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(260px, 1fr)
+  );
+  gap: 24px;
+}
+
+.review-card {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-standard);
+  padding: 28px 24px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s var(--ease-standard),
+              box-shadow 0.3s var(--ease-standard);
+}
+
+.review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+body.dark-mode .review-card:hover {
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.review-stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 14px;
+  color: #f5a623;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+.review-author {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
 /* Collection Grid / Spacing */
