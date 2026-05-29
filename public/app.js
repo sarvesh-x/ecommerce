@@ -1409,6 +1409,15 @@ placeOrderBtn.addEventListener('click', async () => {
     const { order, razorpayOrder } = data;
 
     if (razorpayOrder) {
+      // Dynamically load Razorpay checkout script
+      await new Promise((resolve, reject) => {
+        if (window.Razorpay) return resolve();
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('Failed to load Razorpay SDK'));
+        document.head.appendChild(script);
+      });
       // Trigger actual Razorpay Checkout SDK
       const options = {
         key: razorpayOrder.key || 'rzp_test_mockkey', // In case key is passed

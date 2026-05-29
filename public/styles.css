@@ -156,7 +156,7 @@ h6 {
 
 .nav-primary {
   display: flex;
-  gap: 30px;
+  gap: 16px;
   align-items: center;
 }
 
@@ -165,6 +165,7 @@ h6 {
   font-weight: 500;
   color: var(--text-secondary);
   opacity: 0.85;
+  padding: 6px 8px;
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
