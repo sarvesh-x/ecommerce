@@ -723,6 +723,10 @@ function renderWishlistButton(productId, className = 'wishlist-card-btn') {
 
 window.toggleWishlist = toggleWishlist;
 
+document.getElementById('bannerArrowBtn')?.addEventListener('click', () => {
+  document.getElementById('featured-products')?.scrollIntoView({ behavior: 'smooth' });
+});
+
 async function initApp() {
   updateAuthUI();
   updateCartBadge();

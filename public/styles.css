@@ -464,6 +464,86 @@ body.dark-mode .secondary-hero-btn:hover {
   transform: translateY(-1px);
 }
 
+/* Featured Banner 2026 */
+.featured-banner {
+  position: relative;
+  overflow: hidden;
+  height: calc(100vh - var(--header-height));
+  min-height: 600px;
+}
+
+.featured-bg {
+  position: absolute;
+  inset: 0;
+  background: url('assets/fullscreen.jpeg') no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: 0;
+}
+
+.featured-banner .hero-bg-overlay {
+  background: linear-gradient(135deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.55) 100%);
+}
+
+body.dark-mode .featured-bg {
+  filter: brightness(0.5);
+}
+
+.featured-banner .hero-text-wrapper.center {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.featured-banner .hero-buttons.center {
+  justify-content: center;
+}
+
+.featured-banner .hero-text-wrapper.center .hero-title {
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: #00b8cc;
+}
+
+.featured-banner .hero-text-wrapper.center .hero-subtitle {
+  font-size: 0.9rem;
+  letter-spacing: 0.25em;
+  color: #00b8cc;
+}
+
+.featured-banner .hero-text-wrapper.center .hero-description {
+  color: #ffffff;
+}
+
+.arrow-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  animation: bounceArrow 2s ease-in-out infinite;
+  margin: 0 auto;
+}
+
+.arrow-btn:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: #ffffff;
+  transform: translateY(2px) scale(1.05);
+}
+
+@keyframes bounceArrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
 /* Collection Grid / Spacing */
 .collection-section {
   max-width: 1024px;
