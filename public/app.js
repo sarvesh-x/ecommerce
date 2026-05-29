@@ -1,8 +1,6 @@
 // State Management
 history.scrollRestoration = 'manual';
-const API_BASE = window.location.origin.includes('localhost:4000') || window.location.origin.includes('127.0.0.1:4000')
-  ? ''
-  : 'http://localhost:4000';
+const API_BASE = '';
 
 let products = [];
 let cart = JSON.parse(localStorage.getItem('fh_cart')) || [];
