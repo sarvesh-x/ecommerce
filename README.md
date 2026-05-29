@@ -6,6 +6,8 @@ A full-stack ecommerce web app with a 3D skateboard product viewer, user authent
 **Backend:** Node.js + Express  
 **Database:** MongoDB (with in-memory fallback)  
 
+🔗 **Live demo:** [skateboard-store-mf46.onrender.com](https://skateboard-store-mf46.onrender.com)
+
 ---
 
 ## Features

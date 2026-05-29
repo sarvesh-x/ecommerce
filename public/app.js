@@ -15,7 +15,7 @@ let activeSearchQuery = '';
 const body = document.body;
 const toastNotification = document.getElementById('toastNotification');
 const darkModeToggle = document.getElementById('darkModeToggle');
-const sunIcon = darkModeToggle.querySelector('.sun-icon');
+const sunIcon = darkModeToggle.querySelector('.sun-icon ');
 const moonIcon = darkModeToggle.querySelector('.moon-icon');
 
 // Auth DOM
