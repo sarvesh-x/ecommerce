@@ -76,8 +76,8 @@ function normalizeCategory(category = '') {
   const value = String(category).toLowerCase();
   if (value.includes('complete')) return 'Completes';
   if (value.includes('deck')) return 'Decks';
-  if (value.includes('part') || value.includes('truck') || value.includes('wheel') || value.includes('bearing') || value.includes('hardware') || value.includes('grip')) return 'Parts';
-  if (value.includes('helmet') || value.includes('safety')) return 'Parts';
+  if (value.includes('part') || value.includes('truck') || value.includes('wheel') || value.includes('bearing') || value.includes('hardware') || value.includes('grip')) return 'Parts & Hardware';
+  if (value.includes('helmet') || value.includes('safety')) return 'Parts & Hardware';
   if (value.includes('accessor')) return 'Accessories';
   return category || 'Gear';
 }

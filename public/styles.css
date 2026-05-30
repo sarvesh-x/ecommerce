@@ -28,9 +28,9 @@ a, button, input, select, textarea, [onclick],
   --text-tertiary: #a1a1a6;
   --border: #e8e8ed;
   --border-focus: #0071e3;
-  --accent: #0071e3;
+  --accent: #00b8cc;
   --accent-light: rgba(0, 113, 227, 0.1);
-  --accent-hover: #0077ed;
+  --accent-hover: #00b9cf;
   --success: #34c759;
   --danger: #ff3b30;
   --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
@@ -52,7 +52,7 @@ body.dark-mode {
   --text-tertiary: #6e6e73;
   --border: #222224;
   --border-focus: #2997ff;
-  --accent: #2997ff;
+  --accent: #00b8cc;
   --accent-light: rgba(41, 151, 255, 0.15);
   --accent-hover: #4fb0ff;
   --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
@@ -364,6 +364,7 @@ h6 {
   padding: 0 22px;
   position: relative;
   overflow: hidden;
+  min-height: 280px;
 }
 
 .secondary-hero .hero-text-wrapper {
@@ -377,7 +378,7 @@ h6 {
   flex: 1;
   max-width: 45%;
   height: 100%;
-  min-height: 400px;
+  min-height: 300px;
   position: relative;
   z-index: 2;
 }
@@ -586,13 +587,13 @@ body.dark-mode .featured-bg-3 {
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.05;
-  color: #00b8cc;
+  color: var(--accent);
 }
 
 .featured-banner .hero-text-wrapper.center .hero-subtitle {
   font-size: 0.9rem;
   letter-spacing: 0.25em;
-  color: #00b8cc;
+  color: var(--accent);
 }
 
 .featured-banner .hero-text-wrapper.center .hero-description {
@@ -1586,6 +1587,7 @@ body.dark-mode .product-card:hover {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  cursor: pointer;
 }
 
 .product-thumbnail-strip {
@@ -2708,7 +2710,7 @@ body.dark-mode .product-card:hover {
   }
 
   .hero-banner {
-    padding: 0 20px;
+    padding: 80px 20px 20px;
   }
 
   .hero-text-wrapper {
@@ -2883,8 +2885,16 @@ body.dark-mode .product-card:hover {
   transition: filter 0.3s ease;
 }
 
+body.dark-mode .marquee-item {
+  filter: brightness(0) invert(1) opacity(0.35);
+}
+
 .marquee-item:hover {
   filter: brightness(0) opacity(0.7);
+}
+
+body.dark-mode .marquee-item:hover {
+  filter: brightness(0) invert(1) opacity(0.7);
 }
 
 .marquee-text {
@@ -3332,4 +3342,174 @@ body.dark-mode .product-card:hover {
   .cookie-preferences-actions .secondary-btn {
     width: 100%;
   }
+}
+
+/* Image Lightbox */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+
+.lightbox-overlay[hidden] {
+  display: none !important;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.lightbox-close:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-toolbar {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.lightbox-zoom-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.lightbox-zoom-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.lightbox-zoom-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 40px;
+  text-align: center;
+}
+
+.lightbox-viewport {
+  position: relative;
+  z-index: 5;
+  width: 90vw;
+  height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.lightbox-viewport:active {
+  cursor: grabbing;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.15s ease;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
+}
+
+.lightbox-nav:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
+
+.lightbox-nav:disabled {
+  opacity: 0.2;
+  cursor: default;
+  pointer-events: none;
+}
+
+.lightbox-prev {
+  left: 20px;
+}
+
+.lightbox-next {
+  right: 20px;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
 }

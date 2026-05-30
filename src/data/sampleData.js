@@ -128,7 +128,7 @@ const products = [
     sizes: ['139 (for 8.0" deck)', '144 (for 8.25" deck)', '149 (for 8.5" deck)'],
     colors: ['Silver', 'Flat Black'],
     image: '/assets/skate-011.png',
-    gender: 'Parts',
+    gender: 'Parts & Hardware',
     category: 'Parts'
   },
   {
@@ -140,7 +140,7 @@ const products = [
     sizes: ['52mm', '53mm', '54mm'],
     colors: ['Classic White/Red', 'Radial Blue'],
     image: '/assets/skate-012.png',
-    gender: 'Parts',
+    gender: 'Parts & Hardware',
     category: 'Parts'
   },
   {
@@ -152,7 +152,7 @@ const products = [
     sizes: ['Standard 8mm'],
     colors: ['Red Dust Shield'],
     image: '/assets/skate-013.png',
-    gender: 'Parts',
+    gender: 'Parts & Hardware',
     category: 'Parts'
   },
   {
@@ -164,7 +164,7 @@ const products = [
     sizes: ['9" x 33" sheet'],
     colors: ['Black'],
     image: '/assets/skate-014.png',
-    gender: 'Parts',
+    gender: 'Parts & Hardware',
     category: 'Parts'
   },
   {

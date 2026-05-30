@@ -17,7 +17,7 @@ function deriveProductMetadata(product) {
     gender = 'Decks';
   } else if (nameLower.includes('truck') || nameLower.includes('wheels') || nameLower.includes('bearings') || nameLower.includes('grip') || nameLower.includes('helmet')) {
     category = 'Parts';
-    gender = 'Parts';
+    gender = 'Parts & Hardware';
   } else {
     category = 'Accessories';
     gender = 'Accessories';
