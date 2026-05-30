@@ -465,7 +465,7 @@ body.dark-mode .secondary-hero-btn:hover {
   padding: 0 22px;
   position: relative;
   overflow: hidden;
-  clip-path: polygon(0 75px, 100% 0, 100% 100%, 0 calc(100% - 75px));
+  clip-path: none;
 }
 
 .main-hero .hero-text-wrapper {
@@ -687,6 +687,10 @@ body.dark-mode .review-card:hover {
   max-width: 1280px;
   margin: 70px auto;
   padding: 0 22px;
+}
+
+#parts-carousel {
+  margin-top: 0;
 }
 
 .collection-header {
